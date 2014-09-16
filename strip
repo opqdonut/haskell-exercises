@@ -1,0 +1,4 @@
+#!/bin/sh
+awk -v pr=$1 '/^#ifdef sol/ {mode = 2} /^#else/ {mode = 1} /^#endif/ {mode = 0} !/^#/ { if (mode!=pr) print; }'
+
+
