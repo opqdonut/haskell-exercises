@@ -1,14 +1,11 @@
 module W2TestSansHT where
 
+import Impl.Test
 import W2
 import Data.List
 import Data.Char
 import Control.Monad
-import Test.QuickCheck hiding (Result,reason)
-import Test.QuickCheck.Property
-import Test.QuickCheck.Test hiding (Result)
-
-args = stdArgs {maxSize = 100}
+import Test.QuickCheck
 
 main = testExs tests
 
@@ -16,40 +13,23 @@ tests = [[]
         ,[property prop_t2_measure_empty, property prop_t2_measure_nonEmpty]
         ,[prop_t3_takeFinal_1, prop_t3_takeFinal_2]
         ,[prop_t4_remove]
-        ,[prop_t5_substring] -- 5
-        ,[prop_t6_mymax] -- 6
-        ,[prop_t7_countSorted] -- 7
+        ,[prop_t5_substring]
+        ,[prop_t6_mymax]
+        ,[prop_t7_countSorted]
         ,[prop_t8_funny_1, prop_t8_funny_2]
-        ,[property prop_t9_quicksort] -- 9
+        ,[property prop_t9_quicksort]
         ,[prop_t10_powers]
         ,[prop_t11_search_number, prop_t11_search_string]
         ,[prop_t12_fromTo]
-        ,[prop_t13_sums] -- 13
-        ,[property prop_t14_mylast_nonempty, property prop_t14_mylast_empty] -- 14
+        ,[prop_t13_sums]
+        ,[property prop_t14_mylast_nonempty, property prop_t14_mylast_empty]
         ,[prop_t15_sorted_sorted]
         ,[property prop_t16_sumsOf]
         ,[property prop_t17_mymaximum_max, property prop_t17_mymaximum_min, property prop_t17_mymaximum_empty]
-        ,[prop_t18_map_1, prop_t18_map_2] -- 18
-        ,[prop_t19_interpreter_1, prop_t19_interpreter_2] -- 19
-        ,[prop_t20_squares]
-        ]
+        ,[prop_t18_map_1, prop_t18_map_2]
+        ,[prop_t19_interpreter_1, prop_t19_interpreter_2]
+        ,[prop_t20_squares]]
 
-testEx str ts = do
-  putStrLn ("Testing "++str)
-  res <- mapM (quickCheckWithResult args) ts
-  if all isSuccess res
-    then putStrLn "PASS" >> return True
-    else putStrLn "FAIL" >> return False
-
-testExs tests = do
-  sucs <- forM (zip [1..] tests) $ \(i,ts) -> testEx (show i) ts
-  let success = length . filter id $ sucs
-      total = length tests
-  putStrLn $ "TOTAL: "++show success++" / "++show total
-
-infixl 5 ===
-actual === expected =
-  printTestCase ("Expected " ++ show expected ++ ", got " ++ show actual) $ actual == expected
 
 -- -- -- -- -- --
 
