@@ -1,6 +1,6 @@
 module W1 where
 
--- Set 1:
+-- Week 1:
 --   * defining functions
 --   * basic expressions
 --   * pattern matching

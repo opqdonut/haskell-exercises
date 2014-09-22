@@ -1,6 +1,6 @@
 module W2 where
 
--- Set 2:
+-- Week 2:
 --
 --  * lists
 --  * strings
