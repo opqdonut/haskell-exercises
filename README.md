@@ -51,6 +51,7 @@ The topics of the weeks are
 * W2: lists, strings, higher-order functions, polymorphism
 * W3: data types
 * W4: IO
+* W5: type classes
 * more weeks TODO
 
 Solutions
