@@ -49,6 +49,8 @@ The topics of the weeks are
 
 * W1: basics, syntax, defining functions, pattern matching, recursion
 * W2: lists, strings, higher-order functions, polymorphism
+* W3: data types
+* W4: IO
 * more weeks TODO
 
 Solutions
