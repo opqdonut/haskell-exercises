@@ -190,5 +190,5 @@ prop_ex18_isPrime =
 
 prop_ex19_nextPrime =
   forAll (elements [0..max]) $ \n ->
-  nextPrime n === head (dropWhile (<n) primes)
+  nextPrime n === head (dropWhile (<=n) primes)
   where max = 100
