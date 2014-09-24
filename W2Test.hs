@@ -10,51 +10,51 @@ import Test.QuickCheck
 main = testExs tests
 
 tests = [[]
-        ,[property prop_t2_measure_empty, property prop_t2_measure_nonEmpty]
-        ,[prop_t3_takeFinal_1, prop_t3_takeFinal_2]
-        ,[prop_t4_remove]
-        ,[prop_t5_substring]
-        ,[prop_t6_mymax]
-        ,[prop_t7_countSorted]
-        ,[prop_t8_funny_1, prop_t8_funny_2]
-        ,[property prop_t9_quicksort]
-        ,[prop_t10_powers]
-        ,[prop_t11_search_number, prop_t11_search_string]
-        ,[prop_t12_fromTo]
-        ,[prop_t13_sums]
-        ,[property prop_t14_mylast_nonempty, property prop_t14_mylast_empty]
-        ,[prop_t15_sorted_sorted]
-        ,[property prop_t16_sumsOf]
-        ,[property prop_t17_mymaximum_max, property prop_t17_mymaximum_min, property prop_t17_mymaximum_empty]
-        ,[prop_t18_map_1, prop_t18_map_2]
-        ,[prop_t19_interpreter_1, prop_t19_interpreter_2]
-        ,[prop_t20_squares]]
+        ,[property ex2_measure_empty, property ex2_measure_nonEmpty]
+        ,[ex3_takeFinal_1, ex3_takeFinal_2]
+        ,[ex4_remove]
+        ,[ex5_substring]
+        ,[ex6_mymax]
+        ,[ex7_countSorted]
+        ,[ex8_funny_1, ex8_funny_2]
+        ,[property ex9_quicksort]
+        ,[ex10_powers]
+        ,[ex11_search_number, ex11_search_string]
+        ,[ex12_fromTo]
+        ,[ex13_sums]
+        ,[property ex14_mylast_nonempty, property ex14_mylast_empty]
+        ,[ex15_sorted_sorted]
+        ,[property ex16_sumsOf]
+        ,[property ex17_mymaximum_max, property ex17_mymaximum_min, property ex17_mymaximum_empty]
+        ,[ex18_map_1, ex18_map_2]
+        ,[ex19_interpreter_1, ex19_interpreter_2]
+        ,[ex20_squares]]
 
 
 -- -- -- -- -- --
 
-prop_t2_measure_empty () = measure [] === -1
-prop_t2_measure_nonEmpty (NonEmpty xs) = measure xs === length xs
+ex2_measure_empty () = measure [] === -1
+ex2_measure_nonEmpty (NonEmpty xs) = measure xs === length xs
 
-prop_t3_takeFinal_1 =
+ex3_takeFinal_1 =
   forAll (choose (0,20)) $ \n ->
   forAll (choose (0,n)) $ \k ->
   takeFinal k [0..n] === [n-k+1..n]
 
-prop_t3_takeFinal_2 =
+ex3_takeFinal_2 =
   forAll (choose (0,20)) $ \n ->
   forAll (choose (0,n)) $ \k ->
   takeFinal k (reverse [0..n]) === reverse [0..k-1]
 
-prop_t4_remove =
+ex4_remove =
   forAll (choose (0,20)) $ \n ->
   forAll (choose (0,n)) $ \k ->
   remove k [0,2..2*n] === map (2*) ([0..(k-1)] ++ [k+1..n])
 
 testing x prop = printTestCase (show x) prop
 
-prop_t5_substring :: Property
-prop_t5_substring = do
+ex5_substring :: Property
+ex5_substring = do
   base <- choose (ord 'a',ord 'f')
   len <- choose (0,20)
   let list = f [base..base+len-1]
@@ -64,7 +64,7 @@ prop_t5_substring = do
     substring i n list === f [base+i .. base + min (i+n) (len) - 1]
   where f = map chr
 
-prop_t6_mymax = do
+ex6_mymax = do
   t <- choose (0,20)
   f <- choose (0,20) `suchThat` \f -> f/=t
   let p True = t
@@ -76,7 +76,7 @@ word = listOf1 (choose ('a','z'))
 sortedWord = fmap sort word
 unsortedWord = word `suchThat` \w -> w /= sort w
 
-prop_t7_countSorted = do
+ex7_countSorted = do
   ss <- listOf1 sortedWord
   us <- listOf1 unsortedWord
   k <- choose (1,5)
@@ -87,21 +87,21 @@ prop_t7_countSorted = do
   where comb k [] b = b
         comb k a b = take k a ++ comb k b (drop k a)
 
-prop_t8_funny_1 =
+ex8_funny_1 =
   printTestCase ("funny "++show inp) $
   funny inp === out
   where inp = ["a","bcdefgh","simo","xxxxxxxxxxx"]
         out = "BCDEFGH XXXXXXXXXXX"
 
-prop_t8_funny_2 =
+ex8_funny_2 =
   printTestCase ("funny "++show inp) $
   funny inp === out
   where inp = ["aaaaaa","bbbbbb","ccccc","ddddddd"]
         out = "AAAAAA BBBBBB DDDDDDD"
 
-prop_t9_quicksort xs = quicksort xs === sort xs
+ex9_quicksort xs = quicksort xs === sort xs
 
-prop_t10_powers = do
+ex10_powers = do
   n <- choose (2,5)
   len <- choose (1,10)
   end <- choose (n^(len-1),n^len-1)
@@ -121,12 +121,12 @@ prop_t10_powers = do
           | k `mod` n == 0    = check n (div k n)
           | otherwise         = False
 
-prop_t11_search_number = do
+ex11_search_number = do
   n <- choose (0,20 :: Integer)
   printTestCase ("search (+1) (=="++show n++") 0") $
     search (+1) (==n) 0 === n
 
-prop_t11_search_string = do
+ex11_search_string = do
   n <- word
   let w = n++n
       p = (==n)
@@ -135,57 +135,57 @@ prop_t11_search_string = do
 
 
 
-prop_t12_fromTo = do
+ex12_fromTo = do
   start <- choose (0,20)
   len <- choose (0,10)
   let end = start+len-1
   printTestCase ("fromTo "++show start++" "++show end) $
     fromTo start end === [start..end]
 
-prop_t13_sums = do
+ex13_sums = do
   i <- choose (1,20)
   printTestCase ("sums "++show i) $
     sums i === scanl1 (+) [1..i]
 
 
-prop_t14_mylast_nonempty :: NonEmptyList Integer -> Property
-prop_t14_mylast_nonempty (NonEmpty xs) = mylast 0 xs === last xs
-prop_t14_mylast_empty :: Char -> Property
-prop_t14_mylast_empty i = mylast i [] === i
+ex14_mylast_nonempty :: NonEmptyList Integer -> Property
+ex14_mylast_nonempty (NonEmpty xs) = mylast 0 xs === last xs
+ex14_mylast_empty :: Char -> Property
+ex14_mylast_empty i = mylast i [] === i
 
-prop_t15_sorted_sorted = do
+ex15_sorted_sorted = do
   l <- vector 5
   let s = sort l
   conjoin
     [printTestCase ("sorted "++show l) $ sorted l === (s == l)
     ,printTestCase ("sorted "++show s) $ sorted s === True]
 
-prop_t16_sumsOf xs = sumsOf xs === scanl1 (+) xs
+ex16_sumsOf xs = sumsOf xs === scanl1 (+) xs
 
-prop_t17_mymaximum_max :: NonEmptyList Integer -> Property
-prop_t17_mymaximum_max (NonEmpty xs) = mymaximum compare 0 xs === maximum xs
+ex17_mymaximum_max :: NonEmptyList Integer -> Property
+ex17_mymaximum_max (NonEmpty xs) = mymaximum compare 0 xs === maximum xs
 
-prop_t17_mymaximum_min :: NonEmptyList Integer -> Property
-prop_t17_mymaximum_min (NonEmpty xs) = mymaximum (\x y -> compare y x) 0 xs === minimum xs
+ex17_mymaximum_min :: NonEmptyList Integer -> Property
+ex17_mymaximum_min (NonEmpty xs) = mymaximum (\x y -> compare y x) 0 xs === minimum xs
 
-prop_t17_mymaximum_empty = do
+ex17_mymaximum_empty = do
   i <- choose (True,False)
   property $ mymaximum compare i [] === i
 
-prop_t18_map_1 = do
+ex18_map_1 = do
   i <- arbitrary :: Gen [Int]
   j <- arbitrary :: Gen [Bool]
   printTestCase ("map2 const "++show i++" "++show j) $
     map2 const i j === take (length j) i
 
-prop_t18_map_2 = do
+ex18_map_2 = do
   i <- arbitrary :: Gen [Int]
   j <- arbitrary :: Gen [Int]
   printTestCase ("map2 (+) "++show i++" "++show j) $
     map2 (+) i j === zipWith (+) i j
 
 
-prop_t19_interpreter_1 = do
+ex19_interpreter_1 = do
   a0 <- choose (10,20)
   a1 <- choose (0,10)
   b0 <- choose (1,3)
@@ -199,7 +199,7 @@ prop_t19_interpreter_1 = do
   printTestCase ("interpreter "++show input) $
     interpreter input === output
 
-prop_t19_interpreter_2 = do
+ex19_interpreter_2 = do
   nums <- vectorOf 4 $ choose (0,10)
   let diffs = zipWith (-) nums (0:nums)
       f x | x<0 = replicate (negate x) "decA"
@@ -209,7 +209,7 @@ prop_t19_interpreter_2 = do
   printTestCase ("interpreter "++show input) $
     interpreter input === output
 
-prop_t20_squares =
+ex20_squares =
   forAll (choose (0,1000)) $ \n ->
   let ret = squares n
   in conjoin [printTestCase "length" $ length ret === n,

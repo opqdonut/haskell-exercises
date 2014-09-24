@@ -17,51 +17,51 @@ import Test.QuickCheck.Monadic
 
 main = testExs tests
 
-tests = [[prop_t1_hello]
-        ,[prop_t2_greet]
-        ,[prop_t3_greet2]
-        ,[prop_t4_readWords]
-        ,[prop_t5_readUntil]
-        ,[prop_t6_printFibs]
-        ,[prop_t7_isums]
-        ,[prop_t8_whenM_True, prop_t8_whenM_False]
-        ,[prop_t9_while]
-        ,[prop_t10_debug]
-        ,[prop_t11_mapM_]
-        ,[prop_t12_forM]
-        ,[prop_t13_tuplaKutsu]
-        ,[prop_t14_compose]
-        ,[prop_t15_mkCounter]
-        ,[prop_t16_hFetchLines]
-        ,[prop_t17_readCSV]
-        ,[prop_t18_compareFiles]
-        ,[prop_t19_interact_terminates, prop_t19_interact_loop]
+tests = [[ex1_hello]
+        ,[ex2_greet]
+        ,[ex3_greet2]
+        ,[ex4_readWords]
+        ,[ex5_readUntil]
+        ,[ex6_printFibs]
+        ,[ex7_isums]
+        ,[ex8_whenM_True, ex8_whenM_False]
+        ,[ex9_while]
+        ,[ex10_debug]
+        ,[ex11_mapM_]
+        ,[ex12_forM]
+        ,[ex13_tuplaKutsu]
+        ,[ex14_compose]
+        ,[ex15_mkCounter]
+        ,[ex16_hFetchLines]
+        ,[ex17_readCSV]
+        ,[ex18_compareFiles]
+        ,[ex19_interact_terminates, ex19_interact_loop]
         ]
 
 -- -- -- -- --
 
-prop_t1_hello = monadicIO $ do
+ex1_hello = monadicIO $ do
   (text,()) <- runc' hello
   stop $ text === "HELLO\nWORLD\n"
 
 word = listOf1 (choose ('a','z'))
 
-prop_t2_greet = monadicIO $ do
+ex2_greet = monadicIO $ do
   name <- pick word
   (text,()) <- runc' $ greet name
   stop $ text === ("HELLO "++name++"\n")
 
-prop_t3_greet2 =  monadicIO $ do
+ex3_greet2 =  monadicIO $ do
   name <- pick word
   (text,()) <- runc (name++"\n") greet2
   stop $ text === ("HELLO "++name++"\n")
 
-prop_t4_readWords = monadicIO $ do
+ex4_readWords = monadicIO $ do
   words <- pick $ listOf1 word
   (_,ret) <- runc (unlines words) (readWords (length words - 1))
   stop $ ret === sort (init words)
 
-prop_t5_readUntil = monadicIO $ do
+ex5_readUntil = monadicIO $ do
   end <- pick word
   words <- pick $ listOf1 (word `suchThat` (/=end))
   let input = unlines $ words ++ [end]
@@ -69,14 +69,14 @@ prop_t5_readUntil = monadicIO $ do
   stop . printTestCase ("readUntil (==" ++ show end ++ ")\nInput: "++show input) $
     ret === words
 
-prop_t6_printFibs = monadicIO $ do
+ex6_printFibs = monadicIO $ do
   n <- pick $ choose (0,40)
   (text,_) <- runc' $ printFibs n
   stop . printTestCase ("printFibs "++show n) $
     text === unlines (map show (take n fibs))
   where fibs = 1:1:zipWith (+) fibs (tail fibs)
 
-prop_t7_isums = monadicIO $ do
+ex7_isums = monadicIO $ do
   numbers <- pick . listOf1 $ choose (-10,10)
   let n = length numbers
   (text,ret) <- runc (unlines $ map show numbers) $ isums n
@@ -86,7 +86,7 @@ prop_t7_isums = monadicIO $ do
              printTestCase "printing" $
              text === unlines (map show $ scanl1 (+) numbers)]
 
-prop_t8_whenM_True = monadicIO $ do
+ex8_whenM_True = monadicIO $ do
   r <- run $ newIORef False
   let op = writeIORef r True
   let cond = return True
@@ -95,7 +95,7 @@ prop_t8_whenM_True = monadicIO $ do
   stop $ printTestCase "whenM (return True)" $
     v
 
-prop_t8_whenM_False = monadicIO $ do
+ex8_whenM_False = monadicIO $ do
   r <- run $ newIORef False
   let op = writeIORef r True
   let cond = return False
@@ -104,7 +104,7 @@ prop_t8_whenM_False = monadicIO $ do
   stop $ printTestCase "whenM (return False)" $
     not v
 
-prop_t9_while = monadicIO $ do
+ex9_while = monadicIO $ do
   i <- pick $ choose (0,10 :: Int)
   a <- run $ newIORef 0
   b <- run $ newIORef 0
@@ -117,7 +117,7 @@ prop_t9_while = monadicIO $ do
     conjoin [printTestCase "number of calls to condition" $ af === i+1,
              printTestCase "number of calls to operation" $ bf === i]
 
-prop_t10_debug = monadicIO $ do
+ex10_debug = monadicIO $ do
   token <- pick word
   value <- pick word
   print <- pick word
@@ -126,7 +126,7 @@ prop_t10_debug = monadicIO $ do
     conjoin [printTestCase "tulostus" $ text === (token ++ "\n" ++ print ++ "\n" ++ token ++ "\n"),
              printTestCase "palautus" $ ret === value]
 
-prop_t11_mapM_ = monadicIO $ do
+ex11_mapM_ = monadicIO $ do
   r <- run $ (newIORef [] :: IO (IORef [Int]))
   lis <- pick $ listOf1 arbitrary
   let op x = modifyIORef r (x:)
@@ -135,7 +135,7 @@ prop_t11_mapM_ = monadicIO $ do
   stop $ printTestCase ("mapM op "++show lis) $
     ret === reverse lis
 
-prop_t12_forM = monadicIO $ do
+ex12_forM = monadicIO $ do
   r <- run $ (newIORef [] :: IO (IORef [Int]))
   lis <- pick $ listOf1 arbitrary
   let op x = do modifyIORef r (x:)
@@ -146,14 +146,14 @@ prop_t12_forM = monadicIO $ do
     conjoin [printTestCase "return value" $ ret === map (+1) lis,
              printTestCase "side effects" $ out === reverse lis]
 
-prop_t13_tuplaKutsu = monadicIO $ do
+ex13_tuplaKutsu = monadicIO $ do
   i <- pick $ (choose (0,20) :: Gen Int)
   let op = return (return i)
   out <- run $ tuplaKutsu $ op
   stop $ printTestCase ("doubleCall (return (return "++show i++"))") $
     out === i
 
-prop_t14_compose = monadicIO $ do
+ex14_compose = monadicIO $ do
   i <- pick $ (choose (0,20) :: Gen Int)
   let op1 = return . (*2)
       op2 = return . (+1)
@@ -161,14 +161,14 @@ prop_t14_compose = monadicIO $ do
   stop $ printTestCase "compose (return . (*2)) (return . (+1))" $
     out === (i+1)*2
 
-prop_t15_mkCounter = monadicIO $ do
+ex15_mkCounter = monadicIO $ do
   n <- pick $ choose (0,20)
   m <- run $ do (i,g) <- mkCounter
                 replicateM_ n i
                 g
   stop $ m === n
 
-prop_t16_hFetchLines = monadicIO $ do
+ex16_hFetchLines = monadicIO $ do
   lines <- pick $ listOf1 word
   inds <- fmap (nub.sort) . pick . listOf1 $ choose (1,length lines)
 
@@ -191,14 +191,14 @@ tmpSpit pattern conts = do
   hClose h
   return path
 
-prop_t17_readCSV = monadicIO $ do
+ex17_readCSV = monadicIO $ do
   dat <- pick $ listOf1 (listOf1 word)
   let dat' = toCSV dat
   path <- run $ tmpSpit "readCSV.in" dat'
   ret <- run $ readCSV path
   stop $ printTestCase ("File contents: "++show dat') $ ret === dat
 
-prop_t18_compareFiles = monadicIO $ do
+ex18_compareFiles = monadicIO $ do
   alines <- pick $ listOf1 word
   lines2 <- pick $ vectorOf (length alines) word
   diffs <- pick $ fmap (nub.sort) $ listOf1 (choose (0,length alines-1))
@@ -214,7 +214,7 @@ prop_t18_compareFiles = monadicIO $ do
     conjoin [printTestCase "number of lines printed" $ length ls === 2*length diffs,
              printTestCase "lines printed" $ ls === should]
 
-prop_t19_interact_terminates = monadicIO $ do
+ex19_interact_terminates = monadicIO $ do
   let f :: (String,String) -> (Bool,String,String)
       f (s,_) = (False,s,s)
   w <- pick $ word
@@ -222,7 +222,7 @@ prop_t19_interact_terminates = monadicIO $ do
   stop $ conjoin [printTestCase "tulostus" $ text === w,
                   printTestCase "palautus" $ ret === w]
 
-prop_t19_interact_loop = monadicIO $ do
+ex19_interact_loop = monadicIO $ do
   is <- pick $ listOf1 (arbitrary :: Gen Int)
   let f :: (String,[Int]) -> (Bool,String,[Int])
       f ("END",lis) = (False,"END\n", lis)
