@@ -294,8 +294,8 @@ isPrime = undefined
 nextPrime :: Integer -> Integer
 #ifdef sol
 nextPrime n =
-  if isPrime n
-  then n
+  if isPrime (n+1)
+  then (n+1)
   else nextPrime (n+1)
 #else
 nextPrime = undefined
