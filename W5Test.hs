@@ -9,9 +9,9 @@ import Data.Maybe
 import Control.Monad
 import System.Random
 
-import Test.QuickCheck hiding (Result,reason,classify,Failure)
+import Test.QuickCheck hiding (Result,reason,classify,Failure,(===))
 import Test.QuickCheck.Test hiding (Failure)
-import Test.QuickCheck.Property hiding (classify,MkResult)
+import Test.QuickCheck.Property hiding (classify,MkResult,(===))
 import Test.QuickCheck.Monadic
 import Control.Exception (try,evaluate,SomeException)
 
@@ -69,7 +69,7 @@ m_t3 input =
         property $
          length (filter (<s) input) == 1
          || (s == minimum input && length (filter (==s) input) > 1)
-      Nothing -> fail "expected Just, was Nothing"
+      Nothing -> property $ printTestCase "expected Just, was Nothing" False
 
 ex3 = (m_t3 :: [Int] -> Property)
           .&. (m_t3 :: [Double] -> Property)
@@ -80,14 +80,15 @@ ex4_eq xs =
   printTestCase ("findDifference "++show xs++" "++show xs) $
     isNothing (findDifference xs xs)
 
-ex4_neq :: NonEmptyList Bool -> Property
-ex4_neq (NonEmpty bs) = do
-  i <- choose (0,length bs - 2)
-  let (a,x:b) = splitAt i bs
-      bs' = a ++ not x : b
-    in printTestCase ("findDifference "++show bs++" "++show bs') $
-      case findDifference bs bs' of Nothing -> fail "was Nothing, expected Just"
-                                    Just s -> s === (show x ++ " /= " ++ show (not x))
+ex4_neq (NonEmpty bs) = property $
+  do
+    i <- choose (0,length bs - 2)
+    let (a,x:b) = splitAt i bs
+        bs' = a ++ not x : b
+     in return $ printTestCase ("findDifference "++show bs++" "++show bs') $
+      case findDifference bs bs' of
+           Nothing -> printTestCase "was Nothing, expected Just" False
+           Just s -> s === (show x ++ " /= " ++ show (not x))
 
 ex4_len :: [Char] -> [Char] -> Property
 ex4_len s s' =
@@ -231,13 +232,13 @@ modTree (INode x l r) =
 ex11_1 =
   forAllShrink (choose (0,20)) shrink $ \s ->
   do t <- genTree s
-     printTestCase (show t ++ "\n  ==\n"++show t) $ (t==t) == True
+     return $ printTestCase (show t ++ "\n  ==\n"++show t) $ (t==t) == True
 
 ex11_2 =
   forAllShrink (choose (0,20)) shrink $ \s ->
   do t <- genTree s
      t2 <- modTree t
-     printTestCase (show t ++ "\n  ==\n"++show t2) $ (t==t2) == False
+     return $ printTestCase (show t ++ "\n  ==\n"++show t2) $ (t==t2) == False
 
 ex12_eq :: [Bool] -> Property
 ex12_eq xs =
@@ -287,8 +288,8 @@ ex15_bool bs =
 ck :: (Eq a, Show a) => List a -> [a] -> Property
 ck Empty [] = property True
 ck (LNode x xs) (y:ys) = (x === y) .&&. ck xs ys
-ck Empty ys = fail "Result list ended too soon!"
-ck xs [] = fail "Result list was too long!"
+ck Empty ys = printTestCase "Result list ended too soon!" False
+ck xs [] = printTestCase "Result list was too long!" False
 
 ex16_1 i =
   printTestCase ("runFun (fmap not (Fun even)) "++show i) $
@@ -298,10 +299,11 @@ ex16_2 i =
   printTestCase ("runFun (fmap (*2) (Fun (\\i -> i))) "++show i) $
     runFun (fmap (*2) (Fun id)) i === 2*i
 
-ex17 = do s <- choose (0,10)
+ex17 = property $
+       do s <- choose (0,10)
           let g = mkStdGen s
               (a,b,c) = threeRandom g :: (Int,Int,Int)
-          printTestCase ("values were not different: threeRandom (mkStdGen "++show s++")") $
+          return $ printTestCase ("values were not different: threeRandom (mkStdGen "++show s++")") $
             conjoin [a/=b,
                      a/=c,
                      b/=c]
@@ -311,7 +313,8 @@ shape Leaf Leaf = property $ True
 shape (Node _ l r) (Node _ l' r') =
   conjoin [shape l l',
            shape r r']
-shape x y = fail $ "Trees don't have the same shape:\n"++show x++"\n"++show y
+shape x y = printTestCase ("Trees don't have the same shape:\n"++show x++"\n"++show y)
+            False
 
 genTree' :: Int -> Gen (Tree Bool)
 genTree' 0 = return Leaf
@@ -333,6 +336,6 @@ ex18 = forAllShrink (choose (0,10)) shrink $ \siz ->
      let g = mkStdGen s
          (t',_) = randomizeTree t g :: (Tree Int,StdGen)
          vals = v t'
-     printTestCase ("randomizeTree ("++show t++") (mkStdGen "++show s++")") $
+     return $ printTestCase ("randomizeTree ("++show t++") (mkStdGen "++show s++")") $
        conjoin [shape t t'
                ,printTestCase "values were not different" $ vals == nub vals]
