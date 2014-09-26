@@ -43,10 +43,10 @@ tests = [[property ex1_1, property ex1_2]
 
 ex1_1 a b = a %$ b === (a ++ b ++ a)
 
-ex1_2 :: Int -> Int -> Property
-ex1_2 n v =
+ex1_2 :: NonNegative Int -> Int -> Property
+ex1_2 (NonNegative n) v =
   printTestCase (show n ++ " *! " ++ show v) $
-  conjoin [printTestCase "length" $ length res === v
+  conjoin [printTestCase "length" $ length res === n
           ,printTestCase "values" $ all (==v) res]
   where res = n *! v
 

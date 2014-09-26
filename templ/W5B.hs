@@ -28,10 +28,18 @@ import Data.List
 -- True *! 3 ==> [True,True,True]
 
 (%$) :: String -> String -> String
+#ifdef sol
+x %$ y = x ++ y ++ x
+#else
 x %$ y = undefined
+#endif
 
 (*!) :: Int -> a -> [a]
+#ifdef sol
+n *! val = replicate n val
+#else
 n *! val = undefined
+#endif
 
 -- Ex 2: implement the function allEqual which returns True if all
 -- values in the list are equal.
