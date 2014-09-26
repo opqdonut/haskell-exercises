@@ -28,7 +28,7 @@ testExs tests = do
 
 infixl 5 ===
 actual === expected =
-  printTestCase ("Expected " ++ show expected ++ ", got " ++ show actual) $ actual == expected
+  counterexample ("Expected " ++ show expected ++ ", got " ++ show actual) $ actual == expected
 
 capture :: String -> IO a -> IO (String,a)
 capture input op = do

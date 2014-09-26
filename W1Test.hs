@@ -50,7 +50,7 @@ ex4_poly2 = do
       c = a*x0*x1
       str = concat ["poly2 ",show a," ",show b," ",show c," "]
       t :: Double -> Double -> Property
-      t x y = printTestCase (str++show x++" == "++show y) $ poly2 a b c x `feq` y
+      t x y = counterexample (str++show x++" should be "++show y) $ poly2 a b c x `feq` y
   return $ t x0 0
            .&&. t x1 0
            .&&. t ((x0+x1)/2) (-b^2/(4*a)+c)
@@ -180,7 +180,7 @@ ex17_smallestDivisor_comp = do
   k <- (elements . take 10 $ primes)
   p <- (elements . take 20 . drop 10 $ primes)
   let n = k*p
-  return $ printTestCase (show n) $
+  return $ counterexample (show n) $
            k === smallestDivisor n
 
 ex18_isPrime =

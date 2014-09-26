@@ -53,14 +53,14 @@ ex2_eitherDiv_nonZero x y =
   (y/=0) ==> eitherDiv x y === Right (div x y)
 
 ex3_mapMaybe_1 xs =
-  printTestCase ("let f True = Just True; f False = Nothing in mapMaybe f "++show xs) $
+  counterexample ("let f True = Just True; f False = Nothing in mapMaybe f "++show xs) $
   mapMaybe f xs === filter id xs
   where f True = Just True
         f False = Nothing
 
 ex3_mapMaybe_2 :: [Integer] -> Property
 ex3_mapMaybe_2 is =
-  printTestCase ("let f x = if x>0 then Just (2*x) else Nothing\
+  counterexample ("let f x = if x>0 then Just (2*x) else Nothing\
                  \in mapMaybe f "++show is) $
   mapMaybe f is === map (2*) (filter (>0) is)
   where f x = if x>0 then Just (2*x) else Nothing
@@ -70,21 +70,21 @@ ex4_classify es =
   classify es === partitionEithers es
 
 ex5_matti = property $ do
-  conjoin [printTestCase "getName matti" $
+  conjoin [counterexample "getName matti" $
            getName matti === "Matti"
-          ,printTestCase "getAge matti" $
+          ,counterexample "getAge matti" $
            getAge matti === 90]
 
 word = listOf1 (choose ('a','z'))
 
 ex5_name = property $ do
   n <- word
-  return $ printTestCase ("getName (setName "++show n++" matti)") $
+  return $ counterexample ("getName (setName "++show n++" matti)") $
     getName (setName n matti) === n
 
 ex5_age = property $ do
   a <- choose (0,89)
-  return $ printTestCase ("getAge (setAge "++show a++" matti)") $
+  return $ counterexample ("getAge (setAge "++show a++" matti)") $
     getAge (setAge a matti) === a
 
 ex6_TwoCounters = property $ do
@@ -93,7 +93,7 @@ ex6_TwoCounters = property $ do
   let b = a+b'
   let tc0 = iterate (incA . incB) zeros !! a
       tc1 = iterate incB tc0 !! b'
-  return $ printTestCase ("Tehtiin "++show a++"kpl incA ja "++show b++"kpl incB.") $
+  return $ counterexample ("Tehtiin "++show a++"kpl incA ja "++show b++"kpl incB.") $
     (getA tc1, getB tc1) === (a,b)
 
 ex7_UpDown = property $ do
@@ -101,7 +101,7 @@ ex7_UpDown = property $ do
   b <- choose (0,20)
   let tc0 = iterate tick zero !! a
       tc1 = iterate tick (toggle tc0) !! b
-  return $ printTestCase ("Tehtiin "++show a++"kpl tick, toggle, ja "++show b++"kpl tick.") $
+  return $ counterexample ("Tehtiin "++show a++"kpl tick, toggle, ja "++show b++"kpl tick.") $
     get tc1 === a-b
 
 ex8_valAtRoot_Nothing =
@@ -112,7 +112,7 @@ ex8_valAtRoot_Just = property $ do
   r <- genTree 3 :: Gen (Tree Integer)
   v <- choose (0,10 :: Integer)
   let t = Node v l r
-  return $ printTestCase (show t) $
+  return $ counterexample (show t) $
     valAtRoot t === Just v
 
 genTree :: Arbitrary a => Int -> Gen (Tree a)
@@ -129,7 +129,7 @@ genTree siz = do
 ex9_treeSize =
   forAllShrink (choose (0,50)) shrink $ \s -> do
     t <- genTree s
-    return $ printTestCase (show t) $
+    return $ counterexample (show t) $
       treeSize (t :: Tree Int) === s
 
 genLeft :: Arbitrary a => a -> Int -> Gen (Tree a)
@@ -147,7 +147,7 @@ ex10_leftest_Just = property $ do
   k <- choose (0,10)
   s <- choose (0,10)
   t <- genLeft k s
-  return $ printTestCase (show t) $
+  return $ counterexample (show t) $
     leftest (t :: Tree Int) === Just k
 
 genL :: Int -> Gen (Tree Bool -> Tree Bool)
@@ -162,23 +162,23 @@ ex11_mapTree =
   forAllShrink (choose (0,50)) shrink $ \s -> do
     t <- genTree s
     let t' = mapTree (even::Int->Bool) t
-    return $ printTestCase ("mapTree even "++show t++"\nPalautti:\n"++show t') $
+    return $ counterexample ("mapTree even "++show t++"\nPalautti:\n"++show t') $
       check t t'
   where check Leaf Leaf = property $ True
         check (Node a al ar) bt@(Node b bl br) =
-          printTestCase ("Alipuussa "++show bt) $
+          counterexample ("Alipuussa "++show bt) $
           conjoin [b === even a,
                    check al bl,
                    check ar br]
         check a b =
-          printTestCase ("Puitten rakenteet eivat tasmaa:\n"++show a++"\n"++show b) False
+          counterexample ("Puitten rakenteet eivat tasmaa:\n"++show a++"\n"++show b) False
 
 ex12_insertL =
   forAllShrink (choose (0,20)) shrink $ \s -> do
     f <- genL s
     let t0 = f Leaf
         t1 = f (Node True Leaf Leaf)
-    return $ printTestCase ("insertL True "++show t0) $
+    return $ counterexample ("insertL True "++show t0) $
       insertL True t0 === t1
 
 genMeasure 0 = return $ Leaf
@@ -197,7 +197,7 @@ ex13_measure =
   forAllShrink (choose (0,20)) shrink $ \s -> do
     t <- genMeasure s
     let t' = zeroTree t :: Tree Int
-    return $ printTestCase (show t') $
+    return $ counterexample (show t') $
       measure t' === t
 
 ex14_mysum xs =
@@ -211,7 +211,7 @@ ex15_treeLeaves =
   forAllShrink (choose (0,20)) shrink $ \s -> do
     t <- genTree s
     let leaves = s+1
-    return $ printTestCase (show t) $
+    return $ counterexample (show t) $
       foldTree leaft 1 (t :: Tree Bool) === leaves
 
 modTree k Leaf = Leaf
@@ -222,21 +222,21 @@ ex15_treeSum = property $ do
   s <- choose (0,5)
   t0 <- genTree s :: Gen (Tree ())
   let t = modTree k t0
-  return $ printTestCase (show t) $
+  return $ counterexample (show t) $
     foldTree sumt 0 t === s*k
 
 ex16_rgb_red =
-  printTestCase (show Red) $
+  counterexample (show Red) $
   rgb Red === [1,0,0]
 ex16_rgb_green =
-  printTestCase (show Green) $
+  counterexample (show Green) $
   rgb Green === [0,1,0]
 ex16_rgb_blue =
-  printTestCase (show Blue) $
+  counterexample (show Blue) $
   rgb Blue === [0,0,1]
 
 fcmp actual expected =
-  printTestCase ("Expected " ++ show expected ++ ", got " ++ show actual) $
+  counterexample ("Expected " ++ show expected ++ ", got " ++ show actual) $
     diff < eps
   where diff = sum . map abs $ zipWith (-) actual expected
         eps = 0.01
@@ -245,7 +245,7 @@ ex16_rgb_darken = property $ do
   s <- choose (0,1)
   let col = Darken s (Darken s Red)
   let ans = rgb col
-  return $ printTestCase (show col) $
+  return $ counterexample (show col) $
     fcmp ans [(1-s)^2, 0, 0]
 
 ex16_rgb_mix = property $ do
@@ -253,7 +253,7 @@ ex16_rgb_mix = property $ do
   g <- choose (0,1)
   let col = Mix (Darken r Red) (Darken g Green)
   let ans = rgb col
-  return $ printTestCase (show col) $
+  return $ counterexample (show col) $
     fcmp ans [(1-r), (1-g), 0]
 
 ex16_rgb_complicated = property $ do
@@ -266,7 +266,7 @@ ex16_rgb_complicated = property $ do
       f = min 1
       x' = 1-x
       y' = 1-y
-  return $ printTestCase (show c) $
+  return $ counterexample (show c) $
     fcmp ans [y'*(f $ x'*r0+r1),
               y'*(f $ x'*g0+g1),
               y'*(f $ x'*b0+b1)]

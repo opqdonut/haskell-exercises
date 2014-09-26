@@ -45,12 +45,12 @@ ex1_1 a b = a %$ b === (a ++ b ++ a)
 
 ex1_2 :: NonNegative Int -> Int -> Property
 ex1_2 (NonNegative n) v =
-  printTestCase (show n ++ " *! " ++ show v) $
-  conjoin [printTestCase "length" $ length res === n
-          ,printTestCase "values" $ all (==v) res]
+  counterexample (show n ++ " *! " ++ show v) $
+  conjoin [counterexample "length" $ length res === n
+          ,counterexample "values" $ all (==v) res]
   where res = n *! v
 
-m_t2 input exp = printTestCase (show input) $ allEqual input === exp
+m_t2 input exp = counterexample (show input) $ allEqual input === exp
 
 g_t2 input = let x = input++[False,True] in m_t2 x False
 
@@ -69,15 +69,15 @@ m_t3 input =
         property $
          length (filter (<s) input) == 1
          || (s == minimum input && length (filter (==s) input) > 1)
-      Nothing -> property $ printTestCase "expected Just, was Nothing" False
+      Nothing -> property $ counterexample "expected Just, was Nothing" False
 
 ex3 = (m_t3 :: [Int] -> Property)
           .&. (m_t3 :: [Double] -> Property)
-          .&. printTestCase (show [1]) (secondSmallest ([1] :: [Int]) == Nothing)
+          .&. counterexample (show [1]) (secondSmallest ([1] :: [Int]) == Nothing)
 
 ex4_eq :: [Integer] -> Property
 ex4_eq xs =
-  printTestCase ("findDifference "++show xs++" "++show xs) $
+  counterexample ("findDifference "++show xs++" "++show xs) $
     isNothing (findDifference xs xs)
 
 ex4_neq (NonEmpty bs) = property $
@@ -85,20 +85,20 @@ ex4_neq (NonEmpty bs) = property $
     i <- choose (0,length bs - 2)
     let (a,x:b) = splitAt i bs
         bs' = a ++ not x : b
-     in return $ printTestCase ("findDifference "++show bs++" "++show bs') $
+     in return $ counterexample ("findDifference "++show bs++" "++show bs') $
       case findDifference bs bs' of
-           Nothing -> printTestCase "was Nothing, expected Just" False
+           Nothing -> counterexample "was Nothing, expected Just" False
            Just s -> s === (show x ++ " /= " ++ show (not x))
 
 ex4_len :: [Char] -> [Char] -> Property
 ex4_len s s' =
-  l /= l' ==> printTestCase ("findDifference "++show s++" "++show s') (findDifference s s' === Just err)
+  l /= l' ==> counterexample ("findDifference "++show s++" "++show s') (findDifference s s' === Just err)
   where l = length s
         l' = length s'
         err = show l ++ " /= " ++ show l'
 
 m_t5 input exp =
-  printTestCase (show input) $
+  counterexample (show input) $
     average input === exp
 
 ex5 = m_t5 [1,2,3] 2
@@ -107,7 +107,7 @@ ex5 = m_t5 [1,2,3] 2
           .&. m_t5 (replicate 10 1 ++ replicate 10 2) 1.5
 
 m_t6 x y exp =
-  printTestCase (show x ++ " == " ++ show y) $
+  counterexample (show x ++ " == " ++ show y) $
    (x == y) === exp
 
 ex6 = m_t6 Bar Bar True
@@ -120,25 +120,25 @@ ex6 = m_t6 Bar Bar True
           .&. m_t6 Xyzzy Bar False
           .&. m_t6 Xyzzy Quux False
 
-ex7 = printTestCase ("Bar <= Bar") ((Bar <= Bar) === True)
-          .&. printTestCase ("Quux < Bar") ((Quux < Bar) === True)
-          .&. printTestCase ("compare Bar Xyzzy") (compare Bar Xyzzy === LT)
-          .&. printTestCase ("compare Quux Quux") (compare Quux Quux === EQ)
-          .&. printTestCase ("Xyzzy > Quux") ((Xyzzy > Quux) === True)
-          .&. printTestCase ("min Xyzzy Bar") (min Xyzzy Bar === Bar)
-          .&. printTestCase ("max Bar Quux") (max Bar Quux === Bar)
-          .&. printTestCase ("compare Xyzzy Xyzzy") (compare Xyzzy Xyzzy == EQ)
-          .&. printTestCase ("compare Bar Bar") (compare Bar Bar == EQ)
+ex7 = counterexample ("Bar <= Bar") ((Bar <= Bar) === True)
+          .&. counterexample ("Quux < Bar") ((Quux < Bar) === True)
+          .&. counterexample ("compare Bar Xyzzy") (compare Bar Xyzzy === LT)
+          .&. counterexample ("compare Quux Quux") (compare Quux Quux === EQ)
+          .&. counterexample ("Xyzzy > Quux") ((Xyzzy > Quux) === True)
+          .&. counterexample ("min Xyzzy Bar") (min Xyzzy Bar === Bar)
+          .&. counterexample ("max Bar Quux") (max Bar Quux === Bar)
+          .&. counterexample ("compare Xyzzy Xyzzy") (compare Xyzzy Xyzzy == EQ)
+          .&. counterexample ("compare Bar Bar") (compare Bar Bar == EQ)
 
 ex8_eq a b c =
   let v = Vector a b c in
-  printTestCase (show v ++ " == " ++ show v) $
+  counterexample (show v ++ " == " ++ show v) $
    (v == v) === True
 
 ex8_neq a b c d e f =
   let v = Vector a b c
       v2 = Vector d e f
-  in printTestCase (show v ++ " == " ++ show v2) $
+  in counterexample (show v ++ " == " ++ show v2) $
      (v == v2) === ((a,b,c)==(d,e,f))
 
 ex9_bops a b c d e f =
@@ -148,15 +148,15 @@ ex9_bops a b c d e f =
       g1 (Vector _ a _) = a
       g2 (Vector _ _ a) = a
   in conjoin
-     [printTestCase (show v1 ++ " + " ++ show v2) $
+     [counterexample (show v1 ++ " + " ++ show v2) $
       conjoin [g0 (v1+v2) === a+d
               ,g1 (v1+v2) === b+e
               ,g2 (v1+v2) === c+f]
-     ,printTestCase (show v1 ++ " * " ++ show v2) $
+     ,counterexample (show v1 ++ " * " ++ show v2) $
       conjoin [g0 (v1*v2) === a*d
               ,g1 (v1*v2) === b*e
               ,g2 (v1*v2) === c*f]
-     ,printTestCase (show v1 ++ " - " ++ show v2) $
+     ,counterexample (show v1 ++ " - " ++ show v2) $
       conjoin [g0 (v1-v2) === a-d
               ,g1 (v1-v2) === b-e
               ,g2 (v1-v2) === c-f]
@@ -168,15 +168,15 @@ ex9_sops a b c =
       g1 (Vector _ a _) = a
       g2 (Vector _ _ a) = a
   in conjoin
-     [printTestCase ("abs ("++show v++")") $
+     [counterexample ("abs ("++show v++")") $
       conjoin [g0 (abs v) === abs a
               ,g1 (abs v) === abs b
               ,g2 (abs v) === abs c]
-     ,printTestCase ("signum ("++show v++")") $
+     ,counterexample ("signum ("++show v++")") $
       conjoin [g0 (signum v) === signum a
               ,g1 (signum v) === signum b
               ,g2 (signum v) === signum c]
-     ,printTestCase ("negate ("++show v++")") $
+     ,counterexample ("negate ("++show v++")") $
       conjoin [g0 (negate v) === negate a
               ,g1 (negate v) === negate b
               ,g2 (negate v) === negate c]]
@@ -187,22 +187,22 @@ ex9_fI a =
 ex10_1 bs =
   let out = freqs bs
       (t,f) = partition id bs
-  in (printTestCase "number of True values" $
+  in (counterexample "number of True values" $
       null t || (length t,True) `elem` out)
      .&.
-     (printTestCase "number of False values" $
+     (counterexample "number of False values" $
       null f || (length f,False) `elem` out)
 
 ex10_2 :: [Integer] -> Property
 ex10_2 is =
   let out = freqs is
       vals = nub is
-  in (printTestCase "return list length" $
+  in (counterexample "return list length" $
       length out === length vals)
      .&&.
      (foldl (.&&.) (property True) $ map (ck out is) vals)
   where ck out vals i = let exp = length (filter (==i) vals)
-                        in printTestCase ("Does the result "++show out++" contain "++show(exp,i)) $ (exp,i) `elem` out
+                        in counterexample ("Does the result "++show out++" contain "++show(exp,i)) $ (exp,i) `elem` out
 
 genTree :: Int -> Gen ITree
 genTree 0 = return ILeaf
@@ -232,18 +232,18 @@ modTree (INode x l r) =
 ex11_1 =
   forAllShrink (choose (0,20)) shrink $ \s ->
   do t <- genTree s
-     return $ printTestCase (show t ++ "\n  ==\n"++show t) $ (t==t) == True
+     return $ counterexample (show t ++ "\n  ==\n"++show t) $ (t==t) == True
 
 ex11_2 =
   forAllShrink (choose (0,20)) shrink $ \s ->
   do t <- genTree s
      t2 <- modTree t
-     return $ printTestCase (show t ++ "\n  ==\n"++show t2) $ (t==t2) == False
+     return $ counterexample (show t ++ "\n  ==\n"++show t2) $ (t==t2) == False
 
 ex12_eq :: [Bool] -> Property
 ex12_eq xs =
   let l = foldr LNode Empty xs  in
-  printTestCase (show l ++ " == " ++ show l) $
+  counterexample (show l ++ " == " ++ show l) $
   (l == l) === True
 
 ex12_neq :: [Integer] -> [Integer] -> Property
@@ -251,59 +251,59 @@ ex12_neq xs ys =
   let l = foldr LNode Empty xs
       l2 = foldr LNode Empty ys
   in
-   printTestCase (show l ++ " == "++ show l2) $
+   counterexample (show l ++ " == "++ show l2) $
   (l == l2) === (xs == ys)
 
 ex13_list :: [Integer] -> Property
-ex13_list xs = printTestCase (show xs) $
+ex13_list xs = counterexample (show xs) $
   incrementAll xs === map (+1) xs
 
 ex13_maybe :: Maybe Integer -> Property
-ex13_maybe m = printTestCase (show m) $
+ex13_maybe m = counterexample (show m) $
   incrementAll m === case m of Nothing -> Nothing
                                Just x -> Just (x+1)
 
 ex14_num k =
-  printTestCase ("fmap (+1) (MkResult "++show k) $
+  counterexample ("fmap (+1) (MkResult "++show k) $
   fmap (+(1::Int)) (MkResult k) === MkResult (k+1)
 
 ex14_empties =
-  (printTestCase ("fmap not NoResult") $
+  (counterexample ("fmap not NoResult") $
    fmap not NoResult === NoResult)
   .&.
-  (printTestCase ("fmap not (Fail \"moi\")") $
+  (counterexample ("fmap not (Fail \"moi\")") $
    fmap not (Failure "moi") === Failure "moi")
 
 ex15_num :: [Int] -> Property
 ex15_num xs =
   let l = foldr LNode Empty xs in
-  printTestCase ("fmap (+1) "++show l) $
+  counterexample ("fmap (+1) "++show l) $
     ck (fmap (+1) l) (map (+1) xs)
 
 ex15_bool bs =
   let l = foldr LNode Empty bs in
-  printTestCase ("fmap not "++show l) $
+  counterexample ("fmap not "++show l) $
     ck (fmap not l) (map not bs)
 
 ck :: (Eq a, Show a) => List a -> [a] -> Property
 ck Empty [] = property True
 ck (LNode x xs) (y:ys) = (x === y) .&&. ck xs ys
-ck Empty ys = printTestCase "Result list ended too soon!" False
-ck xs [] = printTestCase "Result list was too long!" False
+ck Empty ys = counterexample "Result list ended too soon!" False
+ck xs [] = counterexample "Result list was too long!" False
 
 ex16_1 i =
-  printTestCase ("runFun (fmap not (Fun even)) "++show i) $
+  counterexample ("runFun (fmap not (Fun even)) "++show i) $
     runFun (fmap not (Fun even)) i === odd i
 
 ex16_2 i =
-  printTestCase ("runFun (fmap (*2) (Fun (\\i -> i))) "++show i) $
+  counterexample ("runFun (fmap (*2) (Fun (\\i -> i))) "++show i) $
     runFun (fmap (*2) (Fun id)) i === 2*i
 
 ex17 = property $
        do s <- choose (0,10)
           let g = mkStdGen s
               (a,b,c) = threeRandom g :: (Int,Int,Int)
-          return $ printTestCase ("values were not different: threeRandom (mkStdGen "++show s++")") $
+          return $ counterexample ("values were not different: threeRandom (mkStdGen "++show s++")") $
             conjoin [a/=b,
                      a/=c,
                      b/=c]
@@ -313,7 +313,7 @@ shape Leaf Leaf = property $ True
 shape (Node _ l r) (Node _ l' r') =
   conjoin [shape l l',
            shape r r']
-shape x y = printTestCase ("Trees don't have the same shape:\n"++show x++"\n"++show y)
+shape x y = counterexample ("Trees don't have the same shape:\n"++show x++"\n"++show y)
             False
 
 genTree' :: Int -> Gen (Tree Bool)
@@ -336,6 +336,6 @@ ex18 = forAllShrink (choose (0,10)) shrink $ \siz ->
      let g = mkStdGen s
          (t',_) = randomizeTree t g :: (Tree Int,StdGen)
          vals = v t'
-     return $ printTestCase ("randomizeTree ("++show t++") (mkStdGen "++show s++")") $
+     return $ counterexample ("randomizeTree ("++show t++") (mkStdGen "++show s++")") $
        conjoin [shape t t'
-               ,printTestCase "values were not different" $ vals == nub vals]
+               ,counterexample "values were not different" $ vals == nub vals]

@@ -57,7 +57,7 @@ ex5_substring = do
   let list = f [base..base+len-1]
   i <- choose (0,len)
   n <- choose (0,len-i)
-  return $ printTestCase ("substring "++show i++" "++show n++" "++show list) $
+  return $ counterexample ("substring "++show i++" "++show n++" "++show list) $
     substring i n list === f [base+i .. base + min (i+n) (len) - 1]
   where f = map chr
 
@@ -67,7 +67,7 @@ ex6_mymax = do
   let p True = t
       p False = f
   return $
-    printTestCase ("let p True = "++show t++"; p False = "++show f++" in mymax p False True") $
+    counterexample ("let p True = "++show t++"; p False = "++show f++" in mymax p False True") $
     mymax p False True === (t>f)
 
 word = listOf1 (choose ('a','z'))
@@ -79,20 +79,20 @@ ex7_countSorted = do
   us <- listOf1 unsortedWord
   k <- choose (1,5)
   let ws = comb k ss us
-  return $ printTestCase ("countSorted "++show ws) $
+  return $ counterexample ("countSorted "++show ws) $
     length ss === countSorted ws
 
   where comb k [] b = b
         comb k a b = take k a ++ comb k b (drop k a)
 
 ex8_funny_1 =
-  printTestCase ("funny "++show inp) $
+  counterexample ("funny "++show inp) $
   funny inp === out
   where inp = ["a","bcdefgh","simo","xxxxxxxxxxx"]
         out = "BCDEFGH XXXXXXXXXXX"
 
 ex8_funny_2 =
-  printTestCase ("funny "++show inp) $
+  counterexample ("funny "++show inp) $
   funny inp === out
   where inp = ["aaaaaa","bbbbbb","ccccc","ddddddd"]
         out = "AAAAAA BBBBBB DDDDDDD"
@@ -104,14 +104,14 @@ ex10_powers = do
   len <- choose (1,10)
   end <- choose (n^(len-1),n^len-1)
   let p = powers n end
-  return $ printTestCase ("powers "++show n++" "++show end) $ conjoin
-    [printTestCase "all smaller than end" $
+  return $ counterexample ("powers "++show n++" "++show end) $ conjoin
+    [counterexample "all smaller than end" $
      all (<=end) p
-    ,printTestCase "sorted" $
+    ,counterexample "sorted" $
      p == sort p
-    ,printTestCase "length" $
+    ,counterexample "length" $
      length p === len
-    ,printTestCase "powers of n" $
+    ,counterexample "powers of n" $
      all (check n) p]
   where check n 0 = True
         check n 1 = True
@@ -121,14 +121,14 @@ ex10_powers = do
 
 ex11_search_number = do
   n <- choose (0,20 :: Integer)
-  return $ printTestCase ("search (+1) (=="++show n++") 0") $
+  return $ counterexample ("search (+1) (=="++show n++") 0") $
     search (+1) (==n) 0 === n
 
 ex11_search_string = do
   n <- word
   let w = n++n
       p = (==n)
-  return $ printTestCase ("search tail (=="++show n++") "++show w) $
+  return $ counterexample ("search tail (=="++show n++") "++show w) $
     search tail p w == n
 
 
@@ -137,12 +137,12 @@ ex12_fromTo = do
   start <- choose (0,20)
   len <- choose (0,10)
   let end = start+len-1
-  return $ printTestCase ("fromTo "++show start++" "++show end) $
+  return $ counterexample ("fromTo "++show start++" "++show end) $
     fromTo start end === [start..end]
 
 ex13_sums = do
   i <- choose (1,20)
-  return $ printTestCase ("sums "++show i) $
+  return $ counterexample ("sums "++show i) $
     sums i === scanl1 (+) [1..i]
 
 
@@ -155,8 +155,8 @@ ex15_sorted_sorted = do
   l <- vector 5
   let s = sort l
   return $ conjoin
-    [printTestCase ("sorted "++show l) $ sorted l === (s == l)
-    ,printTestCase ("sorted "++show s) $ sorted s === True]
+    [counterexample ("sorted "++show l) $ sorted l === (s == l)
+    ,counterexample ("sorted "++show s) $ sorted s === True]
 
 ex16_sumsOf xs = sumsOf xs === scanl1 (+) xs
 
@@ -173,13 +173,13 @@ ex17_mymaximum_empty = do
 ex18_map_1 = do
   i <- arbitrary :: Gen [Int]
   j <- arbitrary :: Gen [Bool]
-  return $ printTestCase ("map2 const "++show i++" "++show j) $
+  return $ counterexample ("map2 const "++show i++" "++show j) $
     map2 const i j === take (length j) i
 
 ex18_map_2 = do
   i <- arbitrary :: Gen [Int]
   j <- arbitrary :: Gen [Int]
-  return $ printTestCase ("map2 (+) "++show i++" "++show j) $
+  return $ counterexample ("map2 (+) "++show i++" "++show j) $
     map2 (+) i j === zipWith (+) i j
 
 
@@ -194,7 +194,7 @@ ex19_interpreter_1 = do
       input = first ++ second
       output = [show a0, show b0, show b1, show a1]
 
-  return $ printTestCase ("interpreter "++show input) $
+  return $ counterexample ("interpreter "++show input) $
     interpreter input === output
 
 ex19_interpreter_2 = do
@@ -204,16 +204,16 @@ ex19_interpreter_2 = do
           | otherwise = replicate x "incA"
       input = concatMap (\x -> f x ++ ["printA"]) diffs
       output = map show nums
-  return $ printTestCase ("interpreter "++show input) $
+  return $ counterexample ("interpreter "++show input) $
     interpreter input === output
 
 ex20_squares =
   forAll (choose (0,1000)) $ \n ->
   let ret = squares n
-  in conjoin [printTestCase "length" $ length ret === n,
-              printTestCase "all squares" $ all isSq ret,
-              printTestCase "in order" $ sort ret == ret,
-              printTestCase "start and end" $ all check ret]
+  in conjoin [counterexample "length" $ length ret === n,
+              counterexample "all squares" $ all isSq ret,
+              counterexample "in order" $ sort ret == ret,
+              counterexample "start and end" $ all check ret]
 
   where isSq x = x == (isqrt x)^2
         isqrt = round . sqrt . fromIntegral

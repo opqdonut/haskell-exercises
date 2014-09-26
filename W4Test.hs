@@ -66,13 +66,13 @@ ex5_readUntil = monadicIO $ do
   words <- pick $ listOf1 (word `suchThat` (/=end))
   let input = unlines $ words ++ [end]
   (_,ret) <- runc input (readUntil (==end))
-  stop . printTestCase ("readUntil (==" ++ show end ++ ")\nInput: "++show input) $
+  stop . counterexample ("readUntil (==" ++ show end ++ ")\nInput: "++show input) $
     ret === words
 
 ex6_printFibs = monadicIO $ do
   n <- pick $ choose (0,40)
   (text,_) <- runc' $ printFibs n
-  stop . printTestCase ("printFibs "++show n) $
+  stop . counterexample ("printFibs "++show n) $
     text === unlines (map show (take n fibs))
   where fibs = 1:1:zipWith (+) fibs (tail fibs)
 
@@ -80,10 +80,10 @@ ex7_isums = monadicIO $ do
   numbers <- pick . listOf1 $ choose (-10,10)
   let n = length numbers
   (text,ret) <- runc (unlines $ map show numbers) $ isums n
-  stop . printTestCase ("isums "++show n) $
-    conjoin [printTestCase "returning" $
+  stop . counterexample ("isums "++show n) $
+    conjoin [counterexample "returning" $
              ret === sum numbers,
-             printTestCase "printing" $
+             counterexample "printing" $
              text === unlines (map show $ scanl1 (+) numbers)]
 
 ex8_whenM_True = monadicIO $ do
@@ -92,7 +92,7 @@ ex8_whenM_True = monadicIO $ do
   let cond = return True
   run $ whenM cond op
   v <- run $ readIORef r
-  stop $ printTestCase "whenM (return True)" $
+  stop $ counterexample "whenM (return True)" $
     v
 
 ex8_whenM_False = monadicIO $ do
@@ -101,7 +101,7 @@ ex8_whenM_False = monadicIO $ do
   let cond = return False
   run $ whenM cond op
   v <- run $ readIORef r
-  stop $ printTestCase "whenM (return False)" $
+  stop $ counterexample "whenM (return False)" $
     not v
 
 ex9_while = monadicIO $ do
@@ -113,18 +113,18 @@ ex9_while = monadicIO $ do
   run $ while ehto op
   af <- run $ readIORef a
   bf <- run $ readIORef b
-  stop $ printTestCase "while" $
-    conjoin [printTestCase "number of calls to condition" $ af === i+1,
-             printTestCase "number of calls to operation" $ bf === i]
+  stop $ counterexample "while" $
+    conjoin [counterexample "number of calls to condition" $ af === i+1,
+             counterexample "number of calls to operation" $ bf === i]
 
 ex10_debug = monadicIO $ do
   token <- pick word
   value <- pick word
   print <- pick word
   (text,ret) <- runc' $ debug token (putStrLn print >> return value)
-  stop $ printTestCase ("debug "++show token++" (do putStrLn "++show print++"; return "++show value++")") $
-    conjoin [printTestCase "tulostus" $ text === (token ++ "\n" ++ print ++ "\n" ++ token ++ "\n"),
-             printTestCase "palautus" $ ret === value]
+  stop $ counterexample ("debug "++show token++" (do putStrLn "++show print++"; return "++show value++")") $
+    conjoin [counterexample "tulostus" $ text === (token ++ "\n" ++ print ++ "\n" ++ token ++ "\n"),
+             counterexample "palautus" $ ret === value]
 
 ex11_mapM_ = monadicIO $ do
   r <- run $ (newIORef [] :: IO (IORef [Int]))
@@ -132,7 +132,7 @@ ex11_mapM_ = monadicIO $ do
   let op x = modifyIORef r (x:)
   run $ mymapM_ op lis
   ret <- run $ readIORef r
-  stop $ printTestCase ("mapM op "++show lis) $
+  stop $ counterexample ("mapM op "++show lis) $
     ret === reverse lis
 
 ex12_forM = monadicIO $ do
@@ -142,15 +142,15 @@ ex12_forM = monadicIO $ do
                 return $ x+1
   ret <- run $ myforM lis op
   out <- run $ readIORef r
-  stop $ printTestCase ("forM "++show lis++" op") $
-    conjoin [printTestCase "return value" $ ret === map (+1) lis,
-             printTestCase "side effects" $ out === reverse lis]
+  stop $ counterexample ("forM "++show lis++" op") $
+    conjoin [counterexample "return value" $ ret === map (+1) lis,
+             counterexample "side effects" $ out === reverse lis]
 
 ex13_tuplaKutsu = monadicIO $ do
   i <- pick $ (choose (0,20) :: Gen Int)
   let op = return (return i)
   out <- run $ tuplaKutsu $ op
-  stop $ printTestCase ("doubleCall (return (return "++show i++"))") $
+  stop $ counterexample ("doubleCall (return (return "++show i++"))") $
     out === i
 
 ex14_compose = monadicIO $ do
@@ -158,7 +158,7 @@ ex14_compose = monadicIO $ do
   let op1 = return . (*2)
       op2 = return . (+1)
   out <- run $ compose op1 op2 i
-  stop $ printTestCase "compose (return . (*2)) (return . (+1))" $
+  stop $ counterexample "compose (return . (*2)) (return . (+1))" $
     out === (i+1)*2
 
 ex15_mkCounter = monadicIO $ do
@@ -179,7 +179,7 @@ ex16_hFetchLines = monadicIO $ do
 
   outs <- run $ hFetchLines h inds
 
-  stop $ printTestCase ("hFetchLines h "++show inds++"\nContents:\n"++unlines lines) $
+  stop $ counterexample ("hFetchLines h "++show inds++"\nContents:\n"++unlines lines) $
     conjoin [outs !! j === lines !! (i-1) | (j,i) <- zip [0..] inds]
 
 toCSV = unlines . map (intercalate ",")
@@ -196,7 +196,7 @@ ex17_readCSV = monadicIO $ do
   let dat' = toCSV dat
   path <- run $ tmpSpit "readCSV.in" dat'
   ret <- run $ readCSV path
-  stop $ printTestCase ("File contents: "++show dat') $ ret === dat
+  stop $ counterexample ("File contents: "++show dat') $ ret === dat
 
 ex18_compareFiles = monadicIO $ do
   alines <- pick $ listOf1 word
@@ -210,17 +210,17 @@ ex18_compareFiles = monadicIO $ do
   path2 <- run $ tmpSpit "compareFilesB.in" bc
   (outp,()) <- runc' $ compareFiles path1 path2
   let ls = lines outp
-  stop $ printTestCase ("compareFiles\nFile A:\n"++ac++"File B:\n"++bc) $
-    conjoin [printTestCase "number of lines printed" $ length ls === 2*length diffs,
-             printTestCase "lines printed" $ ls === should]
+  stop $ counterexample ("compareFiles\nFile A:\n"++ac++"File B:\n"++bc) $
+    conjoin [counterexample "number of lines printed" $ length ls === 2*length diffs,
+             counterexample "lines printed" $ ls === should]
 
 ex19_interact_terminates = monadicIO $ do
   let f :: (String,String) -> (Bool,String,String)
       f (s,_) = (False,s,s)
   w <- pick $ word
   (text,ret) <- runc w $ interact' f ""
-  stop $ conjoin [printTestCase "tulostus" $ text === w,
-                  printTestCase "palautus" $ ret === w]
+  stop $ conjoin [counterexample "tulostus" $ text === w,
+                  counterexample "palautus" $ ret === w]
 
 ex19_interact_loop = monadicIO $ do
   is <- pick $ listOf1 (arbitrary :: Gen Int)
@@ -230,5 +230,5 @@ ex19_interact_loop = monadicIO $ do
       eret = reverse $ 0:is
       etext = unlines $ replicate (length is) "PICK" ++ ["END"]
   (text,ret) <- runc (unlines $ map show is ++ ["END"]) $ interact' f [0]
-  stop $ conjoin [printTestCase "printing" $ text === etext,
-                  printTestCase "return value" $ ret === eret]
+  stop $ conjoin [counterexample "printing" $ text === etext,
+                  counterexample "return value" $ ret === eret]
