@@ -9,9 +9,9 @@ import Data.IORef
 import System.IO
 import System.Directory
 
-import Test.QuickCheck hiding (Result,reason)
+import Test.QuickCheck hiding (Result,reason,(===))
 import Test.QuickCheck.Test
-import Test.QuickCheck.Property
+import Test.QuickCheck.Property hiding ((===))
 import Test.QuickCheck.All
 import Test.QuickCheck.Monadic
 
