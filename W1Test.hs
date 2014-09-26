@@ -3,7 +3,7 @@ module W1Test where
 import Impl.Test
 import W1
 import Data.List
-import Test.QuickCheck
+import Test.QuickCheck hiding ((===))
 
 main = testExs tests
 
@@ -30,7 +30,7 @@ tests = [[]
         ,[ex15_funnyMin_even, ex15_funnyMin_odd
          ,ex15_funnyMin_mixed]
         ,[ex16_pyramid]
-        ,[ex17_smallestDivisor_prime, ex17_smallestDivisor_comp]
+        ,[ex17_smallestDivisor_prime, property ex17_smallestDivisor_comp]
         ,[ex18_isPrime]
         ,[ex19_nextPrime]]
 
@@ -49,10 +49,11 @@ ex4_poly2 = do
   let b = -a*(x0+x1)
       c = a*x0*x1
       str = concat ["poly2 ",show a," ",show b," ",show c," "]
+      t :: Double -> Double -> Property
       t x y = printTestCase (str++show x++" == "++show y) $ poly2 a b c x `feq` y
-  t x0 0
-    .&&. t x1 0
-    .&&. t ((x0+x1)/2) (-b^2/(4*a)+c)
+  return $ t x0 0
+           .&&. t x1 0
+           .&&. t ((x0+x1)/2) (-b^2/(4*a)+c)
 
 ex5_eeny_even x = eeny (2*x) === "eeny"
 ex5_meeny_odd x = eeny (2*x+1) === "meeny"
@@ -179,8 +180,8 @@ ex17_smallestDivisor_comp = do
   k <- (elements . take 10 $ primes)
   p <- (elements . take 20 . drop 10 $ primes)
   let n = k*p
-  printTestCase (show n) $
-    k === smallestDivisor n
+  return $ printTestCase (show n) $
+           k === smallestDivisor n
 
 ex18_isPrime =
   forAll (elements [0..max]) $ \n ->
