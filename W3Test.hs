@@ -7,9 +7,9 @@ import Data.List
 import Data.Either
 import Control.Monad
 
-import Test.QuickCheck hiding (Result,reason,classify)
+import Test.QuickCheck hiding (Result,reason,classify,(===))
 import Test.QuickCheck.Test
-import Test.QuickCheck.Property hiding (classify)
+import Test.QuickCheck.Property hiding (classify,(===))
 
 main = testExs tests
 
@@ -69,7 +69,7 @@ ex4_classify :: [Either Integer Bool] -> Property
 ex4_classify es =
   classify es === partitionEithers es
 
-ex5_matti = do
+ex5_matti = property $ do
   conjoin [printTestCase "getName matti" $
            getName matti === "Matti"
           ,printTestCase "getAge matti" $
@@ -77,42 +77,42 @@ ex5_matti = do
 
 word = listOf1 (choose ('a','z'))
 
-ex5_name = do
+ex5_name = property $ do
   n <- word
-  printTestCase ("getName (setName "++show n++" matti)") $
+  return $ printTestCase ("getName (setName "++show n++" matti)") $
     getName (setName n matti) === n
 
-ex5_age = do
+ex5_age = property $ do
   a <- choose (0,89)
-  printTestCase ("getAge (setAge "++show a++" matti)") $
+  return $ printTestCase ("getAge (setAge "++show a++" matti)") $
     getAge (setAge a matti) === a
 
-ex6_TwoCounters = do
+ex6_TwoCounters = property $ do
   a <- choose (0,20)
   b' <- choose (0,20)
   let b = a+b'
   let tc0 = iterate (incA . incB) zeros !! a
       tc1 = iterate incB tc0 !! b'
-  printTestCase ("Tehtiin "++show a++"kpl incA ja "++show b++"kpl incB.") $
+  return $ printTestCase ("Tehtiin "++show a++"kpl incA ja "++show b++"kpl incB.") $
     (getA tc1, getB tc1) === (a,b)
 
-ex7_UpDown = do
+ex7_UpDown = property $ do
   a <- choose (0,20)
   b <- choose (0,20)
   let tc0 = iterate tick zero !! a
       tc1 = iterate tick (toggle tc0) !! b
-  printTestCase ("Tehtiin "++show a++"kpl tick, toggle, ja "++show b++"kpl tick.") $
+  return $ printTestCase ("Tehtiin "++show a++"kpl tick, toggle, ja "++show b++"kpl tick.") $
     get tc1 === a-b
 
 ex8_valAtRoot_Nothing =
   valAtRoot Leaf === (Nothing :: Maybe Bool)
 
-ex8_valAtRoot_Just = do
+ex8_valAtRoot_Just = property $ do
   l <- genTree 3 :: Gen (Tree Integer)
   r <- genTree 3 :: Gen (Tree Integer)
   v <- choose (0,10 :: Integer)
   let t = Node v l r
-  printTestCase (show t) $
+  return $ printTestCase (show t) $
     valAtRoot t === Just v
 
 genTree :: Arbitrary a => Int -> Gen (Tree a)
@@ -129,7 +129,7 @@ genTree siz = do
 ex9_treeSize =
   forAllShrink (choose (0,50)) shrink $ \s -> do
     t <- genTree s
-    printTestCase (show t) $
+    return $ printTestCase (show t) $
       treeSize (t :: Tree Int) === s
 
 genLeft :: Arbitrary a => a -> Int -> Gen (Tree a)
@@ -143,11 +143,11 @@ genLeft k s = go s
 
 ex10_leftest_Nothing = leftest Leaf === (Nothing :: Maybe Bool)
 
-ex10_leftest_Just = do
+ex10_leftest_Just = property $ do
   k <- choose (0,10)
   s <- choose (0,10)
   t <- genLeft k s
-  printTestCase (show t) $
+  return $ printTestCase (show t) $
     leftest (t :: Tree Int) === Just k
 
 genL :: Int -> Gen (Tree Bool -> Tree Bool)
@@ -162,7 +162,7 @@ ex11_mapTree =
   forAllShrink (choose (0,50)) shrink $ \s -> do
     t <- genTree s
     let t' = mapTree (even::Int->Bool) t
-    printTestCase ("mapTree even "++show t++"\nPalautti:\n"++show t') $
+    return $ printTestCase ("mapTree even "++show t++"\nPalautti:\n"++show t') $
       check t t'
   where check Leaf Leaf = property $ True
         check (Node a al ar) bt@(Node b bl br) =
@@ -178,7 +178,7 @@ ex12_insertL =
     f <- genL s
     let t0 = f Leaf
         t1 = f (Node True Leaf Leaf)
-    printTestCase ("insertL True "++show t0) $
+    return $ printTestCase ("insertL True "++show t0) $
       insertL True t0 === t1
 
 genMeasure 0 = return $ Leaf
@@ -197,7 +197,7 @@ ex13_measure =
   forAllShrink (choose (0,20)) shrink $ \s -> do
     t <- genMeasure s
     let t' = zeroTree t :: Tree Int
-    printTestCase (show t') $
+    return $ printTestCase (show t') $
       measure t' === t
 
 ex14_mysum xs =
@@ -211,18 +211,18 @@ ex15_treeLeaves =
   forAllShrink (choose (0,20)) shrink $ \s -> do
     t <- genTree s
     let leaves = s+1
-    printTestCase (show t) $
+    return $ printTestCase (show t) $
       foldTree leaft 1 (t :: Tree Bool) === leaves
 
 modTree k Leaf = Leaf
 modTree k (Node _ l r) = Node k (modTree k l) (modTree k r)
 
-ex15_treeSum = do
+ex15_treeSum = property $ do
   k <- choose (0,5 :: Int)
   s <- choose (0,5)
   t0 <- genTree s :: Gen (Tree ())
   let t = modTree k t0
-  printTestCase (show t) $
+  return $ printTestCase (show t) $
     foldTree sumt 0 t === s*k
 
 ex16_rgb_red =
@@ -241,22 +241,22 @@ fcmp actual expected =
   where diff = sum . map abs $ zipWith (-) actual expected
         eps = 0.01
 
-ex16_rgb_darken = do
+ex16_rgb_darken = property $ do
   s <- choose (0,1)
   let col = Darken s (Darken s Red)
   let ans = rgb col
-  printTestCase (show col) $
+  return $ printTestCase (show col) $
     fcmp ans [(1-s)^2, 0, 0]
 
-ex16_rgb_mix = do
+ex16_rgb_mix = property $ do
   r <- choose (0,1)
   g <- choose (0,1)
   let col = Mix (Darken r Red) (Darken g Green)
   let ans = rgb col
-  printTestCase (show col) $
+  return $ printTestCase (show col) $
     fcmp ans [(1-r), (1-g), 0]
 
-ex16_rgb_complicated = do
+ex16_rgb_complicated = property $ do
   [r0,b0,g0,r1,b1,g1] <- replicateM 6 (choose (0,1))
   [x,y] <- replicateM 2 (choose (0,0.1))
   let c0 = Darken x (Mix (Darken (1-r0) Red) (Mix (Darken (1-b0) Blue) (Darken (1-g0) Green)))
@@ -266,7 +266,7 @@ ex16_rgb_complicated = do
       f = min 1
       x' = 1-x
       y' = 1-y
-  printTestCase (show c) $
+  return $ printTestCase (show c) $
     fcmp ans [y'*(f $ x'*r0+r1),
               y'*(f $ x'*g0+g1),
               y'*(f $ x'*b0+b1)]
