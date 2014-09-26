@@ -13,7 +13,7 @@ Then check you can actually run the tests with:
     $ runhaskell W0Test.hs
 
 This should print "Everything seems to be OK!". If you see any errors,
-you might not have the QuickCheck library installed.
+you might not have the QuickCheck library installed (version >=2.7).
 
 Now you can edit `W1.hs` and see how well you did by running
 
