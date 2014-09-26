@@ -18,7 +18,7 @@ tests = [[property $ ex1_safeDiv_zero, property $ ex1_safeDiv_nonZero]
          ,property $ ex2_eitherDiv_nonZero]
         ,[property $ ex3_mapMaybe_1, property $ ex3_mapMaybe_2]
         ,[property $ ex4_classify]
-        ,[ex5_matti, ex5_age, ex5_name]
+        ,[ex5_fred, ex5_age, ex5_name]
         ,[ex6_TwoCounters]
         ,[ex7_UpDown]
         ,[ex8_valAtRoot_Nothing, ex8_valAtRoot_Just]
@@ -69,23 +69,23 @@ ex4_classify :: [Either Integer Bool] -> Property
 ex4_classify es =
   classify es === partitionEithers es
 
-ex5_matti = property $ do
-  conjoin [counterexample "getName matti" $
-           getName matti === "Matti"
-          ,counterexample "getAge matti" $
-           getAge matti === 90]
+ex5_fred = property $ do
+  conjoin [counterexample "getName fred" $
+           getName fred === "Fred"
+          ,counterexample "getAge fred" $
+           getAge fred === 90]
 
 word = listOf1 (choose ('a','z'))
 
 ex5_name = property $ do
   n <- word
-  return $ counterexample ("getName (setName "++show n++" matti)") $
-    getName (setName n matti) === n
+  return $ counterexample ("getName (setName "++show n++" fred)") $
+    getName (setName n fred) === n
 
 ex5_age = property $ do
   a <- choose (0,89)
-  return $ counterexample ("getAge (setAge "++show a++" matti)") $
-    getAge (setAge a matti) === a
+  return $ counterexample ("getAge (setAge "++show a++" fred)") $
+    getAge (setAge a fred) === a
 
 ex6_TwoCounters = property $ do
   a <- choose (0,20)
@@ -93,7 +93,7 @@ ex6_TwoCounters = property $ do
   let b = a+b'
   let tc0 = iterate (incA . incB) zeros !! a
       tc1 = iterate incB tc0 !! b'
-  return $ counterexample ("Tehtiin "++show a++"kpl incA ja "++show b++"kpl incB.") $
+  return $ counterexample ("Did "++show a++" incAs and "++show b++" incBs.") $
     (getA tc1, getB tc1) === (a,b)
 
 ex7_UpDown = property $ do
@@ -101,7 +101,7 @@ ex7_UpDown = property $ do
   b <- choose (0,20)
   let tc0 = iterate tick zero !! a
       tc1 = iterate tick (toggle tc0) !! b
-  return $ counterexample ("Tehtiin "++show a++"kpl tick, toggle, ja "++show b++"kpl tick.") $
+  return $ counterexample ("Did "++show a++" ticks, a toggle, and "++show b++" ticks.") $
     get tc1 === a-b
 
 ex8_valAtRoot_Nothing =
@@ -162,7 +162,7 @@ ex11_mapTree =
   forAllShrink (choose (0,50)) shrink $ \s -> do
     t <- genTree s
     let t' = mapTree (even::Int->Bool) t
-    return $ counterexample ("mapTree even "++show t++"\nPalautti:\n"++show t') $
+    return $ counterexample ("mapTree even "++show t++"\returned:\n"++show t') $
       check t t'
   where check Leaf Leaf = property $ True
         check (Node a al ar) bt@(Node b bl br) =
@@ -171,7 +171,7 @@ ex11_mapTree =
                    check al bl,
                    check ar br]
         check a b =
-          counterexample ("Puitten rakenteet eivat tasmaa:\n"++show a++"\n"++show b) False
+          counterexample ("Tree structures don't match:\n"++show a++"\n"++show b) False
 
 ex12_insertL =
   forAllShrink (choose (0,20)) shrink $ \s -> do

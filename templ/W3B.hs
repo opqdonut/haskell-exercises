@@ -102,11 +102,11 @@ data Person = PersonUndefined
 #endif
 
 -- fred is a person whose name is Fred and age is 90
-matti :: Person
+fred :: Person
 #ifdef sol
-matti = MkPerson 90 "Matti"
+fred = MkPerson 90 "Fred"
 #else
-matti = undefined
+fred = undefined
 #endif
 
 -- getName returns the name of the person
