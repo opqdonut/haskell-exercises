@@ -11,6 +11,8 @@ import System.Directory
 import System.IO
 import Control.Exception (finally)
 
+-- toplevel
+
 args = stdArgs {maxSize = 100}
 
 testEx str ts = do
@@ -26,9 +28,16 @@ testExs tests = do
       total = length tests
   putStrLn $ "TOTAL: "++show success++" / "++show total
 
+-- utils
+
 infixl 5 ===
 actual === expected =
   counterexample ("Expected " ++ show expected ++ ", got " ++ show actual) $ actual == expected
+
+counterexample' :: Testable prop => String -> prop -> Gen Property
+counterexample' s p = return (counterexample s p)
+
+-- monadic tests
 
 capture :: String -> IO a -> IO (String,a)
 capture input op = do

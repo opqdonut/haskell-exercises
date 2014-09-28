@@ -52,6 +52,7 @@ The topics of the weeks are
 * W3: data types
 * W4: IO
 * W5: type classes
+* W6: Monads
 * more weeks TODO
 
 Working on the Excercises
