@@ -1,6 +1,15 @@
 Opqdonut's Haskell Exercises
 ============================
 
+Install Haskell
+---------------
+
+1. Install [The Haskell Platform](https://www.haskell.org/platform/)
+2. Install QuickCheck:
+```
+$ cabal install quickcheck
+```
+
 Quick Start
 -----------
 
