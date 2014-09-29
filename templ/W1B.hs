@@ -31,7 +31,7 @@ quadruple x = undefined
 #endif
 
 -- Ex 4: define the function poly2. It should take four arguments of
--- type Double, a, b, c, and x and return a^2*x+b*x+c. Give poly2 a
+-- type Double, a, b, c, and x and return a*x^2+b*x+c. Give poly2 a
 -- type signature, i.e. poly2 :: something.
 
 #ifdef sol
