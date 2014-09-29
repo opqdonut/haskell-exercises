@@ -8,22 +8,22 @@ Quick Start
 
 2. Install a fresh QuickCheck (>=2.7):
 
-    $ cabal install QuickCheck
+        $ cabal install QuickCheck
 
 3. Then check you can actually run the tests with:
 
-    $ runhaskell W0Test.hs
+        $ runhaskell W0Test.hs
 
 This should print `Everything seems to be OK!`. If you see any errors,
 you might not have a problem with your Haskell installation.
 
 4. Generate the exercise templates (files `W*.hs`):
 
-    $ make
+        $ make
 
 5. Now you can edit `W1.hs` and see how well you did by running
 
-    $ runhaskell W1Test.hs
+        $ runhaskell W1Test.hs
 
 Introduction
 ------------
@@ -77,11 +77,11 @@ Working on the Excercises
         Expected 1, got 3
         FAIL
 
-  This means that the function from exercise 11 failed the test when
-  the two arguments were 0 and 0. The result should have been 1, but
-  it was 3.
+    This means that the function from exercise 11 failed the test when
+    the two arguments were 0 and 0. The result should have been 1, but
+    it was 3.
 
-  I'm sorry if the test failures aren't always understandable :/
+    I'm sorry if the test failures aren't always understandable :/
 
 - You can also play around with your solutions interactively by
   running `ghci Wn.hs`. This is a good idea for instance when you
