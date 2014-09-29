@@ -3,13 +3,9 @@ module W3Test where
 import W3
 import Impl.Test
 
-import Data.List
 import Data.Either
 import Control.Monad
-
 import Test.QuickCheck hiding (Result,reason,classify,(===))
-import Test.QuickCheck.Test
-import Test.QuickCheck.Property hiding (classify,(===))
 
 main = testExs tests
 

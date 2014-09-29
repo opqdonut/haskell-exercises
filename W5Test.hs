@@ -4,16 +4,10 @@ import W5
 import Impl.Test
 
 import Data.List
-import Data.Either
 import Data.Maybe
-import Control.Monad
 import System.Random
 
 import Test.QuickCheck hiding (Result,reason,classify,Failure,(===))
-import Test.QuickCheck.Test hiding (Failure)
-import Test.QuickCheck.Property hiding (classify,MkResult,(===))
-import Test.QuickCheck.Monadic
-import Control.Exception (try,evaluate,SomeException)
 
 main = testExs tests
 

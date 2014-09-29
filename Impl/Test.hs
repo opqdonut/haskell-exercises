@@ -2,7 +2,6 @@ module Impl.Test where
 
 import Control.Monad
 import Test.QuickCheck hiding (Result,reason)
-import Test.QuickCheck.Property
 import Test.QuickCheck.Test hiding (Result)
 import Test.QuickCheck.Monadic
 

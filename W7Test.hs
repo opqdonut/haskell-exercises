@@ -10,9 +10,6 @@ import Control.Monad
 import Control.Monad.State
 
 import Test.QuickCheck hiding (Result,reason,classify,Failure,(===))
-import Test.QuickCheck.Test hiding (Result,Failure,test)
-import Test.QuickCheck.Property hiding (Result,classify,MkResult,(===))
-import Test.QuickCheck.Monadic
 
 main = testExs tests -- $forAllProperties (quickCheckWithResult args)
 

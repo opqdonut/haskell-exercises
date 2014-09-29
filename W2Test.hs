@@ -4,7 +4,6 @@ import Impl.Test
 import W2
 import Data.List
 import Data.Char
-import Control.Monad
 import Test.QuickCheck hiding ((===))
 
 main = testExs tests
