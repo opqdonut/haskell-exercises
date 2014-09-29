@@ -109,19 +109,19 @@ ex4_1 = do
   n <- choose (0,7)
   k <- choose (0,n)
   let Logger _ res = binom n k
-  counterexample' ("Kutsun binom "++show n++" "++show k++" palautusarvo") $
+  counterexample' ("Return value of binom "++show n++" "++show k) $
     res === b n k
 
 ex4_2 = do
   n <- choose (0,7)
   k <- choose (0,n)
   let Logger log _ = binom n k
-  counterexample' ("Kutsun binom "++show n++" "++show k++" loki") $
-    conjoin [counterexample' "lokin ei pitäisi olla tyhjä" $
+  counterexample' ("Log of binom "++show n++" "++show k) $
+    conjoin [counterexample' "log should not be empty" $
              not $ null log,
-             counterexample' "lokin viimeinen viesti" $
+             counterexample' "last message of log" $
              last log === ("B("++show n++","++show k++")"),
-             counterexample' "lokin ensimmäinen viesti" $
+             counterexample' "first message of log" $
              head log === ("B("++show (n-k)++",0)")]
 
 
