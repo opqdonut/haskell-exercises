@@ -4,18 +4,24 @@ Opqdonut's Haskell Exercises
 Quick Start
 -----------
 
-First, generate the exercise templates (files `W*.hs`):
+1. Install [The Haskell Platform](https://www.haskell.org/platform/)
 
-    $ make
+2. Install a fresh QuickCheck (>=2.7):
 
-Then check you can actually run the tests with:
+    $ cabal install QuickCheck
+
+3. Then check you can actually run the tests with:
 
     $ runhaskell W0Test.hs
 
-This should print "Everything seems to be OK!". If you see any errors,
-you might not have the QuickCheck library installed (version >=2.7).
+This should print `Everything seems to be OK!`. If you see any errors,
+you might not have a problem with your Haskell installation.
 
-Now you can edit `W1.hs` and see how well you did by running
+4. Generate the exercise templates (files `W*.hs`):
+
+    $ make
+
+5. Now you can edit `W1.hs` and see how well you did by running
 
     $ runhaskell W1Test.hs
 
