@@ -1,4 +1,4 @@
-WEEKS=W1 W2 W3 W4 W5 W6
+WEEKS=W1 W2 W3 W4 W5 W6 W7
 OUTS=$(patsubst %,%.hs,$(WEEKS))
 SOLS=$(patsubst %,%Sol.hs,$(WEEKS))
 

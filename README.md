@@ -53,7 +53,7 @@ The topics of the weeks are
 * W4: IO
 * W5: type classes
 * W6: Monads
-* more weeks TODO
+* W7: recap of weeks 1-6
 
 Working on the Excercises
 -------------------------
