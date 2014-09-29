@@ -12,20 +12,22 @@ import Control.Exception (finally)
 
 -- toplevel
 
-args = stdArgs {maxSize = 100}
+myArgs = stdArgs {maxSize = 100}
 
-testEx str ts = do
+testEx str ts args = do
   putStrLn ("Testing "++str)
   res <- mapM (quickCheckWithResult args) ts
   if all isSuccess res
     then putStrLn "PASS" >> return True
     else putStrLn "FAIL" >> return False
 
-testExs tests = do
-  sucs <- forM (zip [1..] tests) $ \(i,ts) -> testEx (show i) ts
+testExsArgs tests args = do
+  sucs <- forM (zip [1..] tests) $ \(i,ts) -> testEx (show i) ts args
   let success = length . filter id $ sucs
       total = length tests
   putStrLn $ "TOTAL: "++show success++" / "++show total
+
+testExs tests = testExsArgs tests myArgs
 
 -- utils
 
