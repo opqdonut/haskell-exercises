@@ -14,8 +14,8 @@ Quick Start
 
         $ runhaskell W0Test.hs
 
-This should print `Everything seems to be OK!`. If you see any errors,
-you might not have a problem with your Haskell installation.
+    This should print `Everything seems to be OK!`. If you see any errors,
+    you might not have a problem with your Haskell installation.
 
 4. Generate the exercise templates (files `W*.hs`):
 
