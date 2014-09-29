@@ -131,7 +131,7 @@ ilog2 = undefined
 --
 --   B(n,k) = B(n-1,k) + B(n-1,k-1)
 --   B(n,0) = 1
---   B(0,k) = 0, kun k>0
+--   B(0,k) = 0, when k>0
 --
 -- Hint! pattern matching is your friend.
 
