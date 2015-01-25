@@ -285,7 +285,7 @@ sumsOf xs = undefined
 --
 -- For an empty list the given default value is returned.
 --
--- Esimerkkejä:
+-- Examples:
 --   mymaximum compare (-1) [] ==> -1
 --   mymaximum compare (-1) [1,3,2] ==> 3
 --   let comp 0 0 = EQ
@@ -347,7 +347,7 @@ map2 f as bs = undefined
 -- interpreter ["incA","incB","incB","printA","printB"] ==> ["1","2"]
 --
 -- Surprise! after you've implemented the function, try running this in GHCi:
---     interact (unlines . laskuri . lines)
+--     interact (unlines . interpreter . lines)
 -- after this you can enter commands on separate lines and see the
 -- responses to them
 --
