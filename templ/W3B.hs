@@ -364,14 +364,14 @@ insertL x t = undefined
 --
 -- Tree size is defined as in Ex 9
 --
--- Esimerkkejä:
+-- Examples:
 --
 -- measure (Node 'a' Leaf Leaf)
 --  ==> Node 1 Leaf Leaf
 -- measure (Node 'a' (Node 'b' Leaf Leaf) Leaf)
 --  ==> Node 2 (Node 1 Leaf Leaf) Leaf
 -- measure (Node 0 (Node 0 Leaf Leaf) Leaf)
---  ==> Node 3 (Node 1 Leaf Leaf) (Node 1 Leaf Leaf)
+--  ==> Node 2 (Node 1 Leaf Leaf) Leaf
 -- measure (Node 0 (Node 0 Leaf Leaf)
 --                 (Node 0 (Node 0 Leaf Leaf)
 --                         (Node 0 Leaf
