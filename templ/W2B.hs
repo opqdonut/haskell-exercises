@@ -111,7 +111,7 @@ mymax measure a b = undefined
 -- how many of the strings are in alphabetical order (i.e. how many of
 -- the strings have their letters in alphabetical order)
 --
--- Remember the functions length, filter and sorted
+-- Remember the functions length, filter and sort
 
 countSorted :: [String] -> Int
 #ifdef sol
