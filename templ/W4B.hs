@@ -293,14 +293,14 @@ mkCounter = undefined
 
 hFetchLines :: Handle -> [Int] -> IO [String]
 #ifdef sol
-hFetchLines h nums = do cont <- hGetContents h
-                        let split = lines cont
-                        return $ pick 1 nums split
-  where pick _ []       _         = []
-        pick _ _        []        = []
-        pick i (n:nums) (s:split)
-          | i==n      = s:pick (i+1) nums split
-          | otherwise = pick (i+1) (n:nums) split
+hFetchLines h nums = do
+    contents <- hGetContents h
+    return (numLinesOnly contents nums)
+
+numLinesOnly :: String -> [Int] -> [String]
+numLinesOnly input idxs =
+    let pairs = zip [1..] $ lines input
+    in [ line | (idx,line) <- pairs, idx `elem` idxs ]
 #else
 hFetchLines h nums = undefined
 #endif
