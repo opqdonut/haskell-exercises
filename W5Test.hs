@@ -114,15 +114,21 @@ ex6 = m_t6 Bar Bar True
           .&. m_t6 Xyzzy Bar False
           .&. m_t6 Xyzzy Quux False
 
-ex7 = counterexample ("Bar <= Bar") ((Bar <= Bar) === True)
-          .&. counterexample ("Quux < Bar") ((Quux < Bar) === True)
-          .&. counterexample ("compare Bar Xyzzy") (compare Bar Xyzzy === LT)
-          .&. counterexample ("compare Quux Quux") (compare Quux Quux === EQ)
-          .&. counterexample ("Xyzzy > Quux") ((Xyzzy > Quux) === True)
-          .&. counterexample ("min Xyzzy Bar") (min Xyzzy Bar === Bar)
-          .&. counterexample ("max Bar Quux") (max Bar Quux === Bar)
-          .&. counterexample ("compare Xyzzy Xyzzy") (compare Xyzzy Xyzzy == EQ)
-          .&. counterexample ("compare Bar Bar") (compare Bar Bar == EQ)
+ex7 = conjoin
+  [Quux ?<= Quux, Quux ?<= Bar, Quux ?<= Xyzzy
+  ,Bar ?<= Bar, Bar ?<= Xyzzy
+  ,Xyzzy ?<= Xyzzy
+  ,Bar ?> Quux
+  ,Xyzzy ?> Bar, Xyzzy ?> Quux
+  ,counterexample ("compare Bar Xyzzy") (compare Bar Xyzzy === LT)
+  ,counterexample ("compare Quux Quux") (compare Quux Quux === EQ)
+  ,counterexample ("Xyzzy > Quux") ((Xyzzy > Quux) === True)
+  ,counterexample ("min Xyzzy Bar") (min Xyzzy Bar === Bar)
+  ,counterexample ("max Bar Quux") (max Bar Quux === Bar)
+  ,counterexample ("compare Xyzzy Xyzzy") (compare Xyzzy Xyzzy == EQ)
+  ,counterexample ("compare Bar Bar") (compare Bar Bar == EQ)]
+  where x ?<= y = counterexample (show x ++ " <= " ++ show y) ((x <= y) == True)
+        x ?>  y = counterexample (show x ++ " > " ++ show y) ((x > y) == True)
 
 ex8_eq a b c =
   let v = Vector a b c in
