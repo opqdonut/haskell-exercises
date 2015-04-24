@@ -22,7 +22,7 @@ import Data.Char
 -- http://learnyouahaskell.com/a-fistful-of-monads
 --
 -- But you should probably browse through the previous chapter about
--- Functos too. The State monad is introduced a bit later:
+-- Functors too. The State monad is introduced a bit later:
 --
 -- http://learnyouahaskell.com/for-a-few-monads-more#state
 
