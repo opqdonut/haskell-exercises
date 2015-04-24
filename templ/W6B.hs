@@ -165,7 +165,7 @@ selectSum xs is = undefined
 -- coefficients recursively with the following formulae:
 --
 --   B(n,0) = 1
---   B(0,k) = 0, kun k>0
+--   B(0,k) = 0, when k>0
 --   B(n,k) = B(n-1,k-1) + B(n-1,k)
 --
 -- Every call to the function should be logged as "B(n,k)".
