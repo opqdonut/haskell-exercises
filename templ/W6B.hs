@@ -228,7 +228,7 @@ binom n k = undefined
 -- type Int.
 --
 -- Example:
---  runState paivitys 3
+--  runState update 3
 --    ==> ((),7)
 
 update :: State Int ()
