@@ -263,10 +263,10 @@ lengthAndCount x ys = undefined
 #endif
 
 -- Ex 7: using a state of type [(a,Int)] we can keep track of the
--- numbers of occurrences of eleemnents of type a. For instance
+-- numbers of occurrences of elements of type a. For instance
 -- [('a',1),('x',3)] means that we've seen one 'a' and three 'x's.
 --
--- Implement an State monad operation count that registers the
+-- Implement a State monad operation count that registers the
 -- occurrence of the given value.
 --
 -- Examples:
@@ -290,7 +290,7 @@ count x = modify (inc x)
 count x = return ()
 #endif
 
--- Ex 8: goven a list of values, replace each value by a number saying
+-- Ex 8: given a list of values, replace each value by a number saying
 -- which occurrence of the value this was in the list.
 --
 -- Do this in the State monad, using the operation count you just
@@ -381,7 +381,7 @@ mapM2 op xs ys = undefined
 -- can get from city A to city B by following the roads.
 --
 -- The road network is given as an adjacency list, which means a list
--- of lists [[Int]] where the i'th list gives the citices to wich city
+-- of lists [[Int]] where the i'th list gives the cities to which city
 -- i has a road to.
 --
 -- For example the road network:
@@ -481,7 +481,7 @@ orderedPairs xs = do
 orderedPairs xs = undefined
 #endif
 
--- Tehtävä 13: compute all possible sums of elements from the given
+-- Ex 13: compute all possible sums of elements from the given
 -- list. Use the list monad.
 --
 -- Hint! think about what [True,False] means in the list monad...
@@ -489,7 +489,7 @@ orderedPairs xs = undefined
 -- NB! the order of the returned list does not matter and it may
 -- contain duplicates.
 --
--- Esimerkkejä:
+-- Examples:
 --   sums []
 --     ==> [0]
 --   sums [1]
