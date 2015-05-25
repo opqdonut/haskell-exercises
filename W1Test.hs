@@ -170,7 +170,12 @@ ex16_pyramid =
   f (pyramid n) === ([0..n] ++ [n-1,n-2..0])
   where f xs = map read $ split ',' xs
 
-primes = nubBy (\x y -> mod x y == 0) [2..]
+primes = 2 : filter isPrime' [3, 5 ..]
+  where
+    isPrime' n
+        | n < 2     = False
+        | otherwise = all (\p -> n `mod` p /= 0) $
+                          takeWhile (\p -> p ^ 2 <= n) primes
 
 ex17_smallestDivisor_prime = do
   forAll (elements $ take 12 primes) $ \p ->
