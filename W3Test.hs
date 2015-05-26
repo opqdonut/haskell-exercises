@@ -196,6 +196,7 @@ ex13_measure =
     return $ counterexample (show t') $
       measure t' === t
 
+ex14_mysum :: [Int] -> Property
 ex14_mysum xs =
   foldr sumf 0 xs === sum xs
 
