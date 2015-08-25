@@ -193,7 +193,7 @@ multiplyLog :: Int -> Int -> Logger Int
 multiplyLog a b = do
   msg ("first arg is " ++ show a)
   msg ("second arg is " ++ show b)
-  let ret = a + b
+  let ret = a * b
   msg ("returning product " ++ show ret)
   return ret
 
