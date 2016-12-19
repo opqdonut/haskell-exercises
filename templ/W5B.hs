@@ -152,7 +152,6 @@ instance Ord Foo where
 #ifdef sol
   Quux <= Bar   = True
   Bar <= Xyzzy  = True
-  Quux <= Xyzzy = True
   x <= y        = x == y
 #else
   compare = error "implement me?"
