@@ -101,7 +101,7 @@ data Person = PersonUndefined
   deriving Show
 #endif
 
--- fred is a person whose name is Fred and age is 90
+-- fred is a person whose age is 90 and name is Fred
 fred :: Person
 #ifdef sol
 fred = MkPerson 90 "Fred"
