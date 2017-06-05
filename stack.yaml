@@ -1,0 +1,2 @@
+resolver: lts-8.17
+install-ghc: true

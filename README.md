@@ -1,8 +1,35 @@
 Opqdonut's Haskell Exercises
 ============================
 
-Quick Start
------------
+Quick Start using Stack
+-----------------------
+
+1. Install [Stack](https://www.haskellstack.org/)
+
+2. Download dependencies by running
+
+        $ stack build
+
+2. Then check you can actually run the tests with:
+
+        $ stack runhaskell W0Test.hs
+
+    This should print `Everything seems to be OK!`. If you see any errors,
+    you might not have a problem with your Haskell installation.
+
+3. Generate the exercise templates (files `W*.hs`):
+
+        $ make
+
+4. Now you can edit `W1.hs` and see how well you did by running
+
+        $ stack runhaskell W1Test.hs
+
+Alternative Quick Start using cabal
+-----------------------------------
+
+In case you have problems with `stack`, here is a more old-fashioned
+way to work with the exercises.
 
 1. Install [The Haskell Platform](https://www.haskell.org/platform/)
 
@@ -67,7 +94,8 @@ Working on the Excercises
 - Edit the Wn.hs files according to the instructions
 - Don't remove or change any type signatures (things like `foo ::
   String -> String`) that are already in the files
-- Check your answers for week `n` with `runhaskell WnTest.hs`
+- Check your answers for week `n` with `stack runhaskell WnTest.hs`
+  (or just `runhaskell WnTest.hs` if you're not using stack)
 - A typical test failure looks like this:
 
         Testing 11
@@ -84,8 +112,9 @@ Working on the Excercises
     I'm sorry if the test failures aren't always understandable :/
 
 - You can also play around with your solutions interactively by
-  running `ghci Wn.hs`. This is a good idea for instance when you
-  don't understand the test failures.
+  running `stack exec ghci Wn.hs` (or `ghci Wn.hs`).
+  This is a good idea for instance when you don't understand the
+  test failures.
 
 Solutions
 ---------
