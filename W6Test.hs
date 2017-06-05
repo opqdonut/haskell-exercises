@@ -6,7 +6,7 @@ import Data.List
 import Data.Char
 import Data.Either
 import Data.Ord
-import Control.Monad.State
+import Control.Monad.Trans.State
 
 import Impl.Test
 import Test.QuickCheck hiding (Result,reason,classify,Failure,(===))

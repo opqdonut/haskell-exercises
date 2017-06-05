@@ -1,7 +1,7 @@
 module W6 where
 
 import Control.Monad
-import Control.Monad.State
+import Control.Monad.Trans.State
 import Data.Char
 
 -- Week 6: Monads
@@ -180,8 +180,15 @@ selectSum xs is = undefined
 data Logger a = Logger [String] a
   deriving Show
 
+instance Functor Logger where
+  fmap f (Logger l a) = Logger l (f a)
+
+instance Applicative Logger where
+  pure x = Logger [] x
+  Logger lf f <*> Logger lg g = Logger (lf++lg) (f g)
+
 instance Monad Logger where
-  return x = Logger [] x
+  return = pure
   Logger la a >>= f = Logger (la++lb) b
     where Logger lb b = f a
 
@@ -580,6 +587,19 @@ f2 acc x = undefined
 
 data Result a = MkResult a | NoResult | Failure String deriving (Show,Eq)
 
+instance Functor Result where
+  fmap f (MkResult a) = MkResult (f a)
+  fmap _ NoResult = NoResult
+  fmap _ (Failure s) = Failure s
+
+instance Applicative Result where
+  pure x = MkResult x
+  (MkResult f) <*> (MkResult a) = MkResult (f a)
+  _ <*> NoResult    = NoResult
+  _ <*> (Failure s) = Failure s
+  NoResult <*> _    = NoResult
+  (Failure s) <*> _ = Failure s
+
 instance Monad Result where
 #ifdef sol
   return = MkResult
@@ -588,6 +608,7 @@ instance Monad Result where
   NoResult   >>= _  = NoResult
   Failure x  >>= _  = Failure x
 #else
+  -- implement return and >>=
 #endif
 
 -- Ex 16: Here is the type SL that combines the State and Logger
@@ -630,6 +651,16 @@ putSL s' = SL (\s -> ((),s',[]))
 modifySL :: (Int->Int) -> SL ()
 modifySL f = SL (\s -> ((),f s,[]))
 
+instance Functor SL where
+  fmap f (SL g) = SL (\s -> let (a,s',log) = g s in (f a, s', log))
+
+instance Applicative SL where
+  pure x = SL (\s -> (x, s, []))
+  (SL f) <*> (SL g) = SL (\s -> 
+      let (a, s', log) = g s
+          (atob, s'', log2) = f s
+      in (atob a, s'', log ++ log2))
+
 instance Monad SL where
 #ifdef sol
   return x = SL (\s -> (x,s,[]))
@@ -639,4 +670,5 @@ instance Monad SL where
                          (v2,state2,log2) = runSL op2 state1
                      in (v2,state2,log++log2)
 #else
+  -- implement return and >>=
 #endif
