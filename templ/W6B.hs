@@ -183,14 +183,18 @@ data Logger a = Logger [String] a
 instance Functor Logger where
   fmap f (Logger l a) = Logger l (f a)
 
-instance Applicative Logger where
-  pure x = Logger [] x
-  Logger lf f <*> Logger lg g = Logger (lf++lg) (f g)
-
 instance Monad Logger where
-  return = pure
+  return x = Logger [] x
   Logger la a >>= f = Logger (la++lb) b
     where Logger lb b = f a
+
+-- disregard this. in recent versions of the Haskell standard library,
+-- all Monads must also be Applicative. These exercises don't really
+-- cover Applicative.
+instance Applicative Logger where
+  pure = return
+  (<*>) = ap
+
 
 msg :: String -> Logger ()
 msg s = Logger [s] ()
@@ -587,18 +591,18 @@ f2 acc x = undefined
 
 data Result a = MkResult a | NoResult | Failure String deriving (Show,Eq)
 
+-- A straightforward Functor instance
 instance Functor Result where
   fmap f (MkResult a) = MkResult (f a)
   fmap _ NoResult = NoResult
   fmap _ (Failure s) = Failure s
 
+-- disregard this. in recent versions of the Haskell standard library,
+-- all Monads must also be Applicative. These exercises don't really
+-- cover Applicative.
 instance Applicative Result where
-  pure x = MkResult x
-  (MkResult f) <*> (MkResult a) = MkResult (f a)
-  _ <*> NoResult    = NoResult
-  _ <*> (Failure s) = Failure s
-  NoResult <*> _    = NoResult
-  (Failure s) <*> _ = Failure s
+  pure = return
+  (<*>) = ap
 
 instance Monad Result where
 #ifdef sol
@@ -622,6 +626,8 @@ instance Monad Result where
 -- monad.
 --
 -- This is a tough one. Keep trying and you'll get it!
+--
+-- You might find it easier to start with the Functor instance
 --
 -- Examples:
 --   runSL (putSL 2 >> msgSL "hello" >> getSL) 0
@@ -652,14 +658,16 @@ modifySL :: (Int->Int) -> SL ()
 modifySL f = SL (\s -> ((),f s,[]))
 
 instance Functor SL where
+#ifdef sol
   fmap f (SL g) = SL (\s -> let (a,s',log) = g s in (f a, s', log))
+#else
+  -- implement fmap
+#endif
 
+-- again, disregard this
 instance Applicative SL where
-  pure x = SL (\s -> (x, s, []))
-  (SL f) <*> (SL g) = SL (\s -> 
-      let (a, s', log) = g s
-          (atob, s'', log2) = f s
-      in (atob a, s'', log ++ log2))
+  pure = return
+  (<*>) = ap
 
 instance Monad SL where
 #ifdef sol
