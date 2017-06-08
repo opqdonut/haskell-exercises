@@ -299,6 +299,19 @@ ex15 =
               counterexample' (s++" NoResult >>= op") $
               (NoResult >>= op) === NoResult]
 
+ex16_fmap_1 =
+  do i <- choose (0,10)
+     let op = fmap (+1) getSL
+     counterexample' ("runSL (fmap (+1) getSL) " ++ show i) $
+       runSL op i === (i,i+1,[])
+
+ex16_fmap_2 =
+  do m <- word
+     s <- choose (0,10)
+     let op = fmap (const True) (msgSL m)
+     counterexample' ("runSL (fmap (const True) (msgSL "++show m++")) "++show s) $
+       runSL op s === (True,s,[m])
+
 ex16_1 =
   do i <- choose (0,10)
      let op = putSL i >> getSL >>= \i -> msgSL (show i)
