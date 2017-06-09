@@ -43,11 +43,11 @@ counterexample' s p = return (counterexample s p)
 capture :: String -> IO a -> IO (String,a)
 capture input op = do
   dir <- getTemporaryDirectory
-  (path,h) <- openTempFile dir "jfo.in"
+  (path,h) <- openTempFile dir "haskell-exercises.in"
   hPutStrLn h input
   hClose h
 
-  (opath,oh) <- openTempFile dir "jfo.out"
+  (opath,oh) <- openTempFile dir "haskell-exercises.out"
 
   mystdout <- hDuplicate stdout
   mystdin <- hDuplicate stdin
@@ -61,6 +61,9 @@ capture input op = do
     hDuplicateTo mystdin stdin
     hDuplicateTo mystdout stdout
     hClose oh
+    hClose read
+    hClose mystdout
+    hClose mystdin
 
   str <- readFile opath
 
