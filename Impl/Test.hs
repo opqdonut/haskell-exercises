@@ -8,7 +8,7 @@ import Test.QuickCheck.Monadic
 import GHC.IO.Handle
 import System.Directory
 import System.IO
-import Control.Exception (finally)
+import Control.Exception (bracket,finally)
 
 -- toplevel
 
@@ -40,6 +40,16 @@ counterexample' s p = return (counterexample s p)
 
 -- monadic tests
 
+withOverrideHandle :: Handle -> Handle -> IO a -> IO a
+withOverrideHandle new old op =
+  bracket (hDuplicate old) hClose $ \oldcopy ->
+  bracket (hDuplicateTo new old) (\_ -> hDuplicateTo oldcopy old) $ \_ ->
+  op
+
+withStdinout :: Handle -> Handle -> IO a -> IO a
+withStdinout newin newout =
+  withOverrideHandle newin stdin . withOverrideHandle newout stdout
+
 capture :: String -> IO a -> IO (String,a)
 capture input op = do
   dir <- getTemporaryDirectory
@@ -48,22 +58,11 @@ capture input op = do
   hClose h
 
   (opath,oh) <- openTempFile dir "haskell-exercises.out"
-
-  mystdout <- hDuplicate stdout
-  mystdin <- hDuplicate stdin
-
   read <- openFile path ReadMode
-  hDuplicateTo read stdin
-  hDuplicateTo oh stdout
 
-  -- TODO catch
-  val <- op `finally` do
-    hDuplicateTo mystdin stdin
-    hDuplicateTo mystdout stdout
-    hClose oh
-    hClose read
-    hClose mystdout
-    hClose mystdin
+  val <- withStdinout read oh op `finally`
+    do hClose oh
+       hClose read
 
   str <- readFile opath
 
