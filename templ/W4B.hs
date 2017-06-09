@@ -221,12 +221,12 @@ myforM as f = undefined
 --     do l <- readLn
 --        replicateM l getLine
 
-tuplaKutsu :: IO (IO a) -> IO a
+doubleCall :: IO (IO a) -> IO a
 #ifdef sol
-tuplaKutsu op = do op2 <- op
+doubleCall op = do op2 <- op
                    op2
 #else
-tuplaKutsu op = undefined
+doubleCall op = undefined
 #endif
 
 -- Ex 14: implement the analogue of function composition (the (.)

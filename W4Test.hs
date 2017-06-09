@@ -26,7 +26,7 @@ tests = [[ex1_hello]
         ,[ex10_debug]
         ,[ex11_mapM_]
         ,[ex12_forM]
-        ,[ex13_tuplaKutsu]
+        ,[ex13_doubleCall]
         ,[ex14_compose]
         ,[ex15_mkCounter]
         ,[ex16_hFetchLines]
@@ -143,10 +143,10 @@ ex12_forM = monadicIO $ do
     conjoin [counterexample "return value" $ ret === map (+1) lis,
              counterexample "side effects" $ out === reverse lis]
 
-ex13_tuplaKutsu = monadicIO $ do
+ex13_doubleCall = monadicIO $ do
   i <- pick $ (choose (0,20) :: Gen Int)
   let op = return (return i)
-  out <- run $ tuplaKutsu $ op
+  out <- run $ doubleCall $ op
   stop $ counterexample ("doubleCall (return (return "++show i++"))") $
     out === i
 
