@@ -211,7 +211,7 @@ ex18_compareFiles = monadicIO $ do
     conjoin [counterexample "number of lines printed" $ length ls === 2*length diffs,
              counterexample "lines printed" $ ls === should]
 
-ex19_interact_terminates = monadicIO $ do
+ex19_interact_terminates = monadicIO $ do
   let f :: (String,String) -> (Bool,String,String)
       f (s,_) = (False,s,s)
   w <- pick $ word
@@ -219,7 +219,7 @@ ex19_interact_terminates = monadicIO $ do
   stop $ conjoin [counterexample "tulostus" $ text === w,
                   counterexample "palautus" $ ret === w]
 
-ex19_interact_loop = monadicIO $ do
+ex19_interact_loop = monadicIO $ do
   is <- pick $ listOf1 (arbitrary :: Gen Int)
   let f :: (String,[Int]) -> (Bool,String,[Int])
       f ("END",lis) = (False,"END\n", lis)
