@@ -4,6 +4,8 @@ SOLS=$(patsubst %,%Sol.hs,$(WEEKS))
 
 all: $(OUTS)
 
+solutions: $(SOLS)
+
 $(OUTS): %.hs: templ/%B.hs
 	@echo "=> $@"
 	@./Impl/strip 2 < $< > $@
