@@ -40,6 +40,8 @@ counterexample' s p = return (counterexample s p)
 
 -- monadic tests
 
+stop_ p = stop p >> return ()
+
 withOverrideHandle :: Handle -> Handle -> IO a -> IO a
 withOverrideHandle new old op =
   bracket (hDuplicate old) hClose $ \oldcopy ->
