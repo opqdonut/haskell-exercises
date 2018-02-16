@@ -28,6 +28,22 @@ If these instructions don't work for you, see the
 
         $ stack runhaskell W1Test.hs
 
+Alternative Quick Start With IHaskell
+-------------------------------------
+**Note:** Windows is not supported
+
+IHaskell is a kernel for the Jupyter project which allows you to interactively
+work on the exercises in your browser. Jupyter notebook versions of the exercises
+are located under the notebooks directory.
+
+1. Install [Jupyter](http://jupyter.readthedocs.io/en/latest/install.html)
+
+2. Install [IHaskell](https://github.com/gibiansky/IHaskell)
+
+3. Run using
+
+        $ stack exec jupyter -- notebook
+
 Introduction
 ------------
 
