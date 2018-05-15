@@ -659,7 +659,7 @@ modifySL f = SL (\s -> ((),f s,[]))
 
 instance Functor SL where
 #ifdef sol
-  fmap f (SL g) = SL (\s -> let (a,s',log) = g s in (f a, s', reverse log))
+  fmap f (SL g) = SL (\s -> let (a,s',log) = g s in (f a, s', log))
 #else
   -- implement fmap
 #endif
