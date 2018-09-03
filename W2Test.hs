@@ -22,7 +22,7 @@ tests = [[]
         ,[property ex12_fromTo]
         ,[property ex13_sums]
         ,[property ex14_mylast_nonempty, property ex14_mylast_empty]
-        ,[property ex15_sorted_sorted]
+        ,[property ex15_sorted_empty, property ex15_sorted_sorted]
         ,[property ex16_sumsOf]
         ,[property ex17_mymaximum_max, property ex17_mymaximum_min, property ex17_mymaximum_empty]
         ,[property ex18_map_1, property ex18_map_2]
@@ -149,6 +149,9 @@ ex14_mylast_nonempty :: NonEmptyList Integer -> Property
 ex14_mylast_nonempty (NonEmpty xs) = mylast 0 xs === last xs
 ex14_mylast_empty :: Char -> Property
 ex14_mylast_empty i = mylast i [] === i
+
+ex15_sorted_empty =
+    counterexample "sorted []" $ sorted [] === True
 
 ex15_sorted_sorted = do
   l <- vector 5
