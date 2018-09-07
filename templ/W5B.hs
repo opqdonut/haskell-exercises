@@ -282,7 +282,7 @@ instance Functor Result where
 #endif
 
 -- Ex 15: Implement the instance Functor List (for the datatype List
--- from ex 11)
+-- from ex 12)
 
 instance Functor List where
 #ifdef sol
