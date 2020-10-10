@@ -28,6 +28,10 @@ If these instructions don't work for you, see the
 
         $ stack runhaskell W1Test.hs
 
+5. You can also play around with your solutions interactively by running
+
+        $ stack ghci W1.hs
+
 Introduction
 ------------
 
@@ -88,7 +92,7 @@ Working on the Excercises
     I'm sorry if the test failures aren't always understandable :/
 
 - You can also play around with your solutions interactively by
-  running `stack exec ghci Wn.hs` (or `cabal exec ghci Wn.hs`).
+  running `stack ghci Wn.hs` (or `cabal exec ghci Wn.hs`).
   This is a good idea for instance when you don't understand the
   test failures.
 
