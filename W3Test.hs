@@ -254,8 +254,8 @@ ex16_rgb_mix = property $ do
     fcmp ans [(1-r), (1-g), 0]
 
 ex16_rgb_complicated = property $ do
-  [r0,b0,g0,r1,b1,g1] <- replicateM 6 (choose (0,1))
-  [x,y] <- replicateM 2 (choose (0,0.1))
+  ~[r0,b0,g0,r1,b1,g1] <- replicateM 6 (choose (0,1))
+  ~[x,y] <- replicateM 2 (choose (0,0.1))
   let c0 = Darken x (Mix (Darken (1-r0) Red) (Mix (Darken (1-b0) Blue) (Darken (1-g0) Green)))
       c1 = Mix (Darken (1-g1) Green) (Mix (Darken (1-b1) Blue) (Darken (1-r1) Red))
       c = Darken y (Mix c0 c1)

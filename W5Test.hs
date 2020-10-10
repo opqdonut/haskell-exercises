@@ -7,7 +7,7 @@ import Data.List
 import Data.Maybe
 import System.Random
 
-import Test.QuickCheck hiding (Result,reason,classify,Failure,(===))
+import Test.QuickCheck hiding (Result,reason,classify,Failure,(===),Fun)
 
 main = testExs tests
 

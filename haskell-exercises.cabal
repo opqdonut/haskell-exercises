@@ -4,5 +4,5 @@ build-type: Simple
 cabal-version: >= 1.10
 
 library
-  build-depends: base, QuickCheck == 2.10.1, mtl
+  build-depends: base, directory, QuickCheck, mtl
   default-language: Haskell2010

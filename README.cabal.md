@@ -8,7 +8,7 @@ way to work with the exercises.
 
 2. Download dpendencies and check that you can run the tests:
 
-        $ cabal sandbox init
+        $ cabal v2-build
         $ cabal exec runhaskell W0Test.hs
 
     This should print `Everything seems to be OK!`. If you see any errors,
