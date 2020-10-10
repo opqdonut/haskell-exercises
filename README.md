@@ -1,6 +1,15 @@
 Opqdonut's Haskell Exercises
 ============================
 
+**Note!** You probably want to check out my Haskell MOOC
+([course page], [GitHub]) instead! It's completely free and open and is based
+on these exercises, but also contains study material and other
+improvements. These exercises still work, but this repository isn't
+maintained.
+
+[course page]: https://haskell.mooc.fi
+[GitHub]: https://github.com/moocfi/haskell-mooc
+
 Quick Start
 -----------
 
