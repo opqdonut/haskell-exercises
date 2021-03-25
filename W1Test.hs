@@ -23,7 +23,8 @@ tests = [[]
         ,[ex9_power]
         ,[property ex10_ilog2]
         ,[ex11_binomial]
-        ,[ex12_tribonacci]
+        ,[ex12_tribonacci
+         ,ex12_tribonacci_big]
         ,[ex13_myGcd]
         ,[ex14_funnyCompare_even, ex14_funnyCompare_odd
          ,ex14_funnyCompare_mixed]
@@ -116,6 +117,8 @@ ex12_tribonacci =
         t 2 = 1
         t 3 = 2
         t n = t (n-1) + t (n-2) + t (n-3)
+
+ex12_tribonacci_big = tribonacci 37 === 2082876103
 
 ex13_myGcd =
   forAll (elements [1..max]) $ \x ->
