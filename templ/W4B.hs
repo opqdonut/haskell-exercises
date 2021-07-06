@@ -42,7 +42,7 @@ greet name = undefined
 
 
 -- Ex 3: define the IO operation greet2 that reads a name from the
--- keyboard and then greets that name like the in the previous
+-- keyboard and then greets that name like in the previous
 -- exercise.
 --
 -- Try to use the greet operation in your solution.
